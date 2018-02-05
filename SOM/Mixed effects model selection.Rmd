@@ -1,0 +1,183 @@
+---
+title: "Seedling Mortality Model Selection and Evaluation"
+author: "James Margrove"
+date: "15 Juli 2016"
+output: html_document
+---
+
+House Keeping:
+packages required for analysis:
+```{r}
+require(lme4)
+require(arm)
+require(car)
+require(ggplot2)
+source(system.file("utils", "allFit.R", package = "lme4"))
+require(asreml)
+```
+
+Upload the data for analysis 
+```{r}
+data <- read.table("data.txt", header = T)
+data <- data[data$f.time != 0,]# remove the initial time point
+```
+Double check vectors for correct class. 
+```{r, echo=FALSE, results = "hide"}
+str(data)
+summary(data)
+```
+There is one issue, f.time is not a factor.
+```{r, echo=FALSE, results = "hide"}
+data$f.time <- factor(data$f.time)
+```
+
+```{r, echo=FALSE, results = "FALSE"}
+data$idia <- rep(data$dia[1:2048], times = 4) # the inital diameter
+```
+
+####dAIC()
+dAIC: a funciton to calculate the differance in AIC values to two models 
+```{r}
+dAIC <- function(x1,x2) abs(diff(AIC(x1,x2)[,2]))
+```
+
+
+#Modeling
+Standardize all the variables for analysis: ztopo, light, sand, 
+```{r}
+data$Sztopo <- (data$ztopo - mean(data$ztopo))/sd(data$ztopo)
+data$Slight <- (data$light - mean(data$light))/sd(data$light)
+data$Ssand <- (data$sand - mean(data$sand))/sd(data$sand)
+```
+## Random effects
+####r1
+Random effects are mother nested within sp, and plot (wl) nested within block. The fixed effects specified are those that we a) hypothesied to have an effect, and from data exploration seed to have an effect.
+```{r}
+r1 <- glmer(mortality ~ log(dia) + Sztopo +  f.time + flood + sp + sp:flood +
+              (1|mother) + (f.time|blockL:wl),
+            family = binomial, data = data, control=glmerControl(optimizer="nlminbw"))
+```
+
+####r2
+remove mother as a random effect. 
+```{r}
+r2 <- update(r1, .~. - (1|mother))
+dAIC(r1,r2)
+AIC(r1,r2)
+```
+Using mother as a added effect does not help. 
+
+####r3
+remove the nexted effect of blockL/wl and replace with the plot effect 
+```{r}
+r3 <- glmer(mortality ~ log(dia) + Sztopo +  f.time + flood + sp + sp:flood + (f.time|blockL:wl),
+            family = binomial, data = data, control=glmerControl(optimizer="nlminbw"))
+dAIC(r2,r3)
+AIC(r2,r3)
+```
+Block is not needed. R3 is the best 
+
+
+##Fixed Effects Structure
+delta AIC must be more than 4AIC points for us to consider the more coomplex model better. 
+```{r}
+m1 <- update(r3, .~. - log(dia) + dia)
+dAIC(r3,m1)
+AIC(r3,m1)
+```
+NOTE:r3 is the best model still 
+
+Does the Are there any extra interactions with Diameter 
+```{r}
+m2 <- update(r3, .~. + log(dia):f.time)
+m3 <- update(r3, .~. + log(dia):flood)
+m4 <- update(r3, .~. + log(dia):Sztopo)
+m5 <- update(r3, .~. + log(dia):sp)
+dAIC(m2,r3)
+AIC(r3,m2,m3,m4,m5)
+```
+NOTE:Reduces the model only by 2.07, hence stick with the original 
+
+
+```{r}
+m6 <- update(m1, .~. + dia:f.time)#m6
+m7 <- update(m1, .~. + dia:flood)
+m8 <- update(m1, .~. + dia:Sztopo)
+m9 <- update(m1, .~. + dia:sp)
+AIC(r3,m1,m6,m7,m8,m9)
+```
+
+```{r}
+
+summary(m3)
+dAIC(m3,r3)
+AIC(m3,r3)
+```
+
+
+```{r}
+
+summary(m3)
+dAIC(m3,r3)
+AIC(m3,r3)
+```
+
+Light
+```{r}
+m4 <- update(r3, .~. + Slight)
+m5 <- update(r3, .~. + Slight + Slight:Sztopo)
+m6 <- update(r3, .~. + Slight + Slight:flood)
+AIC(r3,m3,m4,m5)
+```
+
+Sand
+```{r}
+m7 <- update(r3, .~. + Ssand)
+m8 <- update(r3, .~. + Ssand:Sztopo)
+m9 <- update(r3, .~. + Ssand:flood)
+AIC(r3,m7,m8,m9)
+```
+
+Site
+```{r}
+m10 <- update(r3, .~. + site)
+m11 <- update(r3, .~. + site:Sztopo)
+m12 <- update(r3, .~. + site:flood)
+AIC(r3,m10,m11,m12)
+```
+
+# Other remaining model mixtures  
+```{r}
+m13 <- update(r3, .~. - flood:sp) # flooding should be kept in the model. 
+AIC(m13,r3)
+dAIC(m13,r3)# rounded it is dAIC=5, keep this in 
+```
+
+```{r}
+require(MuMIn)
+rdata <- data[!is.na(data$dia),] # removes rows with NAs in dia 
+rdata <- data[!is.na(data$mortality),] # removes rows with NAs in dia 
+r4 <- update(r3,.~. ,data=rdata, na.action="na.fail")
+dr4 <- dredge(r4, rank="AIC", trace=TRUE)# dregde the rest to see what happens
+dr4
+```
+From all the combinations it seems like the best model is the r3, explains the most information with the lest parameters. 
+
+
+
+```{r}
+max.formula <- mortality ~ log(dia) + ztopo +  f.time + flood + sp + sp:flood + (1|blockL:wl)
+
+r3 <- glmer(mortality ~ log(dia) + ztopo +  f.time + flood + sp + sp:flood + (1|blockL:wl),
+            family = binomial, 
+            data = data, 
+            control=glmerControl(optimizer="nlminbw")) # specify the optimizer 
+
+summary(r3)
+
+
+
+?model.matrix
+
+
+```
