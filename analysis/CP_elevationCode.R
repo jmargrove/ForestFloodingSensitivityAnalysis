@@ -4,21 +4,23 @@
 GlobalWD <- read.csv("~/Google Drive/Projects_Collaberations/INDFORSUS Plots/Data/Analysis 2016/GlobalWoodDensityDatabase.csv")
 head(GlobalWD)
 
-GlobalWD_sea<-subset(GlobalWD, Region=="South.East.Asia.tropical")
+GlobalWD_sea<-subset(GlobalWD, Region == "South.East.Asia.tropical")
 head(GlobalWD_sea)
 
-WD_SEA_Genus <- with(GlobalWD_sea, aggregate(WoodDensity, by=list(Genus), function(x) mean(x)))
+WD_SEA_Genus <- with(GlobalWD_sea, aggregate(WoodDensity, by = list(Genus), function(x) mean(x)))
 colnames(WD_SEA_Genus)<-c("Genus", "WD_Genus_Mean")
 head(WD_SEA_Genus)
 
-WD_SEA_Species <- with(GlobalWD_sea, aggregate(WoodDensity, by=list(Full.names), function(x) mean(x)))
+WD_SEA_Species <- with(GlobalWD_sea, aggregate(WoodDensity, by = list(Full.names), function(x) mean(x)))
 colnames(WD_SEA_Species)<-c("Full.names", "WD_Species_Mean")
 head(WD_SEA_Species)
+
+?aggregate
 
 Pele <- read.csv("~/Google Drive/Papers In Prep/James_Field_Study/Distributions33Species.csv")
 head(Pele)
 Pele$Full.names<-with(Pele, paste(Genus, Species, sep="."))
-
+?merge
 PeleWD <- merge(Pele, WD_SEA_Species, by=c("Full.names"), all.x=T)
 head(PeleWD)
 str(PeleWD)

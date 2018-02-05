@@ -1,0 +1,123 @@
+---
+title: "Community Flooding Sensitivity Analaysis"
+author: "James Margrove"
+date: "2 Dezember 2016"
+output: html_document
+---
+
+Remove everything from the working environment 
+```{r}
+rm(list = ls())
+```
+
+Loading required packages 
+```{r, message=FALSE, warning = FALSE}
+require(Hmisc)
+require(INLA)
+require(car)
+require(foreach)
+require(raster)
+```
+
+Upload data, remove unknown species, drop levels and check the data.frame 
+```{r}
+data<- read.table("Spelev.txt",header = T)
+data <- subset(data, sp != "Unkn" & mort != 1 & DBH >50) # remove unknown species
+data <- droplevels(data) 
+str(data)
+```
+
+Cutting the elevation gradient into bands with equal numbers of individuals in. Number of band we want to use = 12; 
+```{r}
+expected_n_bands <- 12
+data$felv25 <- cut2(data$elev, g = expected_n_bands, m = 100)
+bands <- cut2(data$elev, g = expected_n_bands, m = 100, onlycuts = TRUE)
+bands[c(1,length(bands))] <- c(0,88.4) # set the min and max elevation. 
+length(bands)-1 # check number of bands.
+```
+
+Take only the 16 speceis with a flooding sensivity calculated from the seedling water inundation experiment 
+```{r}
+SP <- c("Dry","Pmal","Ptom","Sacu","Sbec","Sfal","Sgib","Slep","Smac","Smec","Spar","Spau","Ssem","Ssmi","Swal","Sxan")
+data <- data[data$sp %in% SP,]
+data <- droplevels(data)
+```
+
+###To calculate the typical flooding sensitivity of an individual within each band we used INLA-SPDE. 
+
+Preparing the mesh. Prior analysis have suggested that this mesh size is a good compormise between precision and computation time.  
+```{r}
+### Coordinates
+coords <- cbind(data$X50N,data$Y50N)
+### Mesh
+mesh1 <- inla.mesh.2d(coords, max.edge = c(100, 200), 
+                   cutoff =100, 
+                   offset=c(200,400))
+### Matern Field
+spde <- inla.spde2.matern(mesh1)
+### A matrix
+A <- inla.spde.make.A(mesh1, coords)
+```
+
+Combining the data into a stack object. 
+```{r}
+stk1 <- inla.stack(tag = "stk1",
+                   data = list(fsen = data$fsen), # response
+                   A = list(A,1),
+                   effects = list(list(i = 1:spde$n.spde),
+                                  data.frame(int = 1,
+                                             felv25 = data$felv25)))
+```
+
+Running the INLA-SPDE model 
+```{r, warning = FALSE, message = FALSE}
+model1 <- inla(fsen ~ -1 + felv25 + f(i, model = spde), 
+               family = "gaussian", 
+               data = inla.stack.data(stk1), 
+               control.predictor = list(A=inla.stack.A(stk1), compute = TRUE),
+               control.fixed = list(expand.factor.strategy = "inla"))
+```
+
+###To make a map of the flooding sensitivity bands 
+Import the map and make sure all the parameters are correct
+```{r}
+r <- raster("Sepilok160_Qgis.tif") #This is the sepilok, map
+e <- extent(603945.651,605788.486,  647133.509,  648054.815) # extent
+plot160c <- crop(x = r, e) # placing the map correctly 
+max(plot160c@data@values) 
+plot160c <- plot160c-min(plot160c@data@values)
+plot160c <- (plot160c/max(plot160c@data@values))*(88.4)
+rVals <- plot160c@data@values # the values of the raster 
+senPlot <- plot160c # rename the plot senPlot 
+```
+
+Defining each elevation band from the raster and change the elements in that band to teh appropreate typical flooding sensitivity. 
+```{r}
+pfsen <- model1$summary.fixed[,1] # The flooding sensitivity values for each band 
+max(pfsen)/min(pfsen)*100 # the % increase in flooding sensitivity
+```
+
+Using a loop to put the flooding calculated sensitivity values at the correct location
+```{r}
+for(i in 1:length(bands)-1){
+cVals <- which(rVals >= bands[i] & rVals <= bands[i+1])
+senPlot@data@values[cVals] <- pfsen[i]}
+```
+
+Using ggplot to plot the raster
+```{r}
+ggSen <- as.data.frame(senPlot, xy = TRUE) # converting the raster to a data.frame 
+colnames(ggSen) <- c("x","y","z")
+### Blue lagoon colours 
+ggplot(ggSen) + geom_raster(aes(x, y, fill=z)) + 
+  scale_fill_gradient(low="#191654", high="#43C6AC", name = "", 
+                      breaks=c(0.22, 0.25, 0.28, 0.31, 0.34)) + 
+  coord_fixed()
+```
+
+```{r}
+#writeRaster(senPlot, "senPlot.tif", format = "GTiff")
+```
+
+
+
