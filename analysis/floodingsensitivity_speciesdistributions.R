@@ -3,7 +3,6 @@
 # author: James Margrove 
 
 # IMPORT FUNCTIONS AND PACKAGES
-source('./functions/booter.R')
 require(ggplot2)
 
 ##### IMPORT DATA 
@@ -13,10 +12,10 @@ riskratio_data$pe <- read.table("./data/pelev_data.txt", header = TRUE)$pe
 
 ##### Calculating the abundance 
 abn <- with(spdata[spdata$sp %in% riskratio_data$sp,], tapply(sp, sp, length))
-riskratio_data$abn <- abn[!is.na(abn)]
+riskratio_data$Abundance <- abn[!is.na(abn)]
 
 ##### Explore 
-ggplot(riskratio_data, aes(x = rr, y = pe, size = abn)) + 
+ggplot(riskratio_data, aes(x = rr, y = pe, size = Abundance)) + 
   geom_point() + 
   stat_smooth(method = lm)
 
@@ -36,16 +35,22 @@ preds <- expand.grid(rr = with(riskratio_data,
 
 preds$p <- predict(model, preds, type = "response")
 preds$CI <- predict(model, preds, type = "response", se.fit = TRUE)$se.fit
+colnames(preds)
 
 ##### Graph the predictions 
 p1 <- ggplot(preds, aes(x = rr, y = p)) + 
         geom_line() + 
-        geom_ribbon(aes(ymin = p - CI, ymax = p + CI, alpha = 0.2)) + 
+        geom_ribbon(aes(ymin = p - CI, ymax = p + CI), alpha = 0.22) +
+        geom_line(aes(x=rr, y=p-CI), linetype = 2) + 
+        geom_line(aes(x=rr, y=p+CI), linetype = 2) + 
         geom_point(data = riskratio_data, aes(x = rr, y = pe, size = abn)) + 
         geom_line() + 
         ylab("p(elevation) m") + 
-        xlab("water inundation sensitivity")
+        xlab("water inundation sensitivity") +
+        theme_classic() +
+        theme(legend.position = c(0.2,0.85))
 
+p1
 
 ggsave(p1, file = './graphs/floodingsensitivity_pelevation.png')
 
