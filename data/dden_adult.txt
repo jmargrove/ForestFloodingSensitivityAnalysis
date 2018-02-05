@@ -1,0 +1,17 @@
+sp	dden_adult 
+ptom	0.31
+pmal	0.39
+Sxan	0.51
+Ssmi	0.31
+Spar	0.36
+Slep	0.42
+Smec	0.42
+Sacu	0.37
+Saf	0.72
+Swal	0.57
+Ssem	0.72
+Spau	0.51
+Dry	0.59
+Sgib	0.41
+Sbec	0.41
+Smac	0.39
