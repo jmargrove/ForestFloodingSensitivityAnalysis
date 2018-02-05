@@ -1,0 +1,118 @@
+---
+title: "Model Elvaluation"
+author: "James Margrove"
+date: "26 Januar 2017"
+output: html_document
+---
+
+Load the ARM package 
+```{r, warning = FALSE, message = FALSE}
+require(arm)
+```
+
+Load the data and the final model
+```{r}
+load("Model.RData")
+data <- read.table("data.txt", header = T)
+data <- data[data$f.time != 0,]# remove the initial time point
+# rows with NA's are not included in the model. Remove the NAs from the data.frame
+rdata <- data[!is.na(data$dia),] # removes rows with NAs in dia 
+rdata <- rdata[!is.na(rdata$mortality),] # removes rows with NAs in dia 
+```
+
+### Modify the binplot() funciton.
+We evaluated the model by using a modified version of binnedplot from the arm package. The modifications to this function were an addition loess smoother on the standard binnedplot. I also used the binned data to draw a density plot, and a qqnorm plot with a qqline to evaluate the distribution of the residuals. The plot was used for evaluating the residuals agaist the fitted values and each fixed effect explanatory variable log(dia), mrico-topography, light, and soil texture))  
+
+Code to modify the binnedplot function from the arm package:
+```{r}
+newbinplot <-   function (x, y, nclass = NULL, xlab = "Expected Values", ylab = "Average residual", 
+            main = "", cex.pts = 0.8, col.pts = 1, 
+            col.int = "gray", ...)  {
+    n <- length(x)
+    if (is.null(nclass)) {
+      if (n >= 100) {
+        nclass = floor(sqrt(length(x)))
+      }
+      if (n > 10 & n < 100) {
+        nclass = 10
+      }
+      if (n <= 10) {
+        nclass = floor(n/2)
+      }
+    }
+    aa <<- data.frame(binned.resids(x, y, nclass)$binned) # result, global 
+    plot(range(aa$xbar), range(aa$ybar, aa$X2se, -aa$X2se, na.rm = TRUE), 
+         xlab = xlab, ylab = ylab, type = "n", main = "", ...)
+    abline(0, 0, lty = 2)
+    lines(aa$xbar, aa$X2se, col = col.int)
+    lines(aa$xbar, -aa$X2se, col = col.int)
+    points(aa$xbar, aa$ybar, pch = 19, cex = cex.pts, col = col.pts)
+    lines(loess.smooth(x = aa$xbar, y = aa$ybar), col = "red") # additional line of code here for the loess smoother 
+    plot(density(as.numeric(aa$ybar)), main = main) # density
+    #qqnorm(aa$ybar, main = ""); qqline(aa$ybar) # qqnorm 
+    car::qqPlot(aa$ybar, col = "black", pch = 19, cex = .75, grid = FALSE, ylab = "Sample Quantiles", xlab = "Theoretical Quantiles")
+}
+```
+
+Extract the residuals into a new data.frame called rdata
+```{r}
+rdata$resid <- resid(s3, type = "pearson") # add the residuals 
+rdata$fit <- fitted(s3)
+```
+
+The residuals of the overall model.
+```{r}
+par(mfrow=c(1,3))
+newbinplot(rdata$fit, rdata$resid)
+```
+
+Assessing each of the continuous fixed effects (micro-topography and diameter)
+```{r, warning = FALSE, message = FALSE}
+par(mfrow=c(2,3))
+fixNames <- c("ztopo","dia")
+sapply(fixNames, FUN = function(x) newbinplot(rdata[,x], rdata[,"resid"], 
+                                              main = paste("Binned Resid", x)))
+```
+
+Boxplot of the residuals by census interval (f.time)
+```{r}
+par(mfrow=c(1,1))
+with(rdata, boxplot(resid ~ f.time))
+```
+
+Boxplot of the residuals by the factor flood (seeding water innundated or not)
+```{r}
+with(rdata, boxplot(resid ~ flood))
+```
+
+Boxplot of the residuals by the factor species (sp)
+```{r}
+with(rdata, boxplot(resid ~ sp))
+```
+
+## Random effects 
+A funciton to asses the random effects. 
+- intercept is the factor of teh random effect 
+- slope is weather the random effect varies with anything
+- model is the model 
+
+Plots a qqplot with the line
+Plots a density plot of the random effects 
+Gives the Shapiro test p-value: testing the null hypothesis that the data do not differ from normality 
+```{r}
+ranNorm <- function(intercept = NULL, slope = 1, model = NULL){
+if(slope >= 2){par(mfcol=c((2),(1*slope)))}else{par(mfrow=c(1,2))} # orentation of the graphs 
+for(i in 1:slope){  # loop depends on how many slopes there are.
+MAIN <- paste("RanEffect:", intercept) # title
+ranEffects <- ranef(model)
+effect <- ranEffects[[intercept]][[i]] # exctaract the random effects 
+qqnorm(effect, main = MAIN); qqline(effect) # qqnorm graph, with line 
+pvalue <- round(shapiro.test(effect)[[2]], digit = 3) # pvalue
+plot(density(effect), main = paste("shp_test:",pvalue))}} # density plot with p-value 
+```
+
+###BlockL:wl (plot)
+```{r}
+ranNorm("blockL:wl", slope = 4, model = s3) 
+```
+The four census period for each plot (n=32) seem to be normally distributed. 
