@@ -20,7 +20,7 @@ ggplot(riskratio_data, aes(x = rr, y = pe, size = Abundance)) +
   stat_smooth(method = lm)
 
 ##### Model data with a weighted linear model 
-model <- lm(pe ~ rr, weight = abn, data = riskratio_data)
+model <- lm(pe ~ rr, weight = Abundance, data = riskratio_data)
 summary(model)
 
 ##### model evaluation 
@@ -43,17 +43,20 @@ p1 <- ggplot(preds, aes(x = rr, y = p)) +
         geom_ribbon(aes(ymin = p - CI, ymax = p + CI), alpha = 0.22) +
         geom_line(aes(x=rr, y=p-CI), linetype = 2) + 
         geom_line(aes(x=rr, y=p+CI), linetype = 2) + 
-        geom_point(data = riskratio_data, aes(x = rr, y = pe, size = abn)) + 
+        geom_point(data = riskratio_data, aes(x = rr, y = pe, size = Abundance)) + 
         geom_line() + 
         ylab("p(elevation) m") + 
-        xlab("water inundation sensitivity") +
+        xlab("Water inundation sensitivity") +
         theme_classic() +
         theme(legend.position = c(0.2,0.85))
 
 p1
 
-ggsave(p1, file = './graphs/floodingsensitivity_pelevation.png')
+ggsave(p1, file = './graphs/floodingsensitivity_pelevation.png', 
+       width = 4, 
+       height = 4)
 
 
+?ggsave
 
 
