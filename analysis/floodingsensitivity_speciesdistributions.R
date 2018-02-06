@@ -57,6 +57,4 @@ ggsave(p1, file = './graphs/floodingsensitivity_pelevation.png',
        height = 4)
 
 
-?ggsave
-
 

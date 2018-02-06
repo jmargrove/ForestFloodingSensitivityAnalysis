@@ -7,7 +7,7 @@ Spar	0.36
 Slep	0.42
 Smec	0.42
 Sacu	0.37
-Saf	0.72
+Sfal	0.72
 Swal	0.57
 Ssem	0.72
 Spau	0.51
