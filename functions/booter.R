@@ -11,8 +11,14 @@ booter <- function(model, data, preds, n, coef = FALSE) {
       predict(btm, newdata = preds, type = "response", re.form = NA)
     }
   }
-  else {
-    "needs to be coded lah"
+  if(coef == TRUE) {
+    
+    booty <- function() {
+      random_row_numbers <- sample(1:dim(data)[1], replace = TRUE)
+      random_row <- data[random_row_numbers, ]
+      btm <- update(model, . ~ . , data = random_row)
+      coef(btm)
+    }
   }
 
   require(foreach)

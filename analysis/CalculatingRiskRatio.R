@@ -2,18 +2,31 @@
 # title: Calculating the Risk ratios for the experiments 
 # author: James Margrove 
 
+# Clear work space 
 rm(list=ls())
 
+# Imports 
 load("./models/Model.Rdata")
 data <- read.table("./data/data.txt", header = TRUE)
 
+# Prediction data frame 
+pred1 <- expand.grid(sp = levels(data$sp), 
+                     flood = c("dry", "wet"), 
+                     ztopo = 0, 
+                     dia = mean(data[data$f.time == 3,]$dia,na.rm = TRUE), 
+                     f.time = "3", 
+                     blockL = 0, 
+                     wl = 0)
 
-pred1 <- expand.grid(sp = levels(data$sp), flood = c("dry","wet"), ztopo = 0, dia = mean(data[data$f.time==3,]$dia,na.rm=T), f.time = "3", blockL = 0, wl = 0)
-pred1$p <- predict(s3, pred1, type="response", re.form = ~0)
-pred1
+# Predict from model
+pred1$p <- predict(s3, pred1, type = "response", re.form = ~0)
 
+# Calculate the risk ratio per species 
 rr <- with(pred1, tapply(p, sp, diff))
+
+# Create data frame 
 riskratio_data <- data.frame(sp = levels(data$sp), rr = rr)
 
-write.table(riskratio_data, file='./data/riskratio_data.txt')
+# Write table to data folder 
+write.table(riskratio_data, file = './data/riskratio_data.txt')
 
