@@ -37,21 +37,22 @@ preds$p <- predict(model, preds, type = "response")
 preds$CI <- predict(model, preds, type = "response", se.fit = TRUE)$se.fit
 colnames(preds)
 
-##### Graph the predictions 
+# Graph the predictions 
 p1 <- ggplot(preds, aes(x = rr, y = p)) + 
         geom_line() + 
         geom_ribbon(aes(ymin = p - CI, ymax = p + CI), alpha = 0.22) +
-        geom_line(aes(x=rr, y=p-CI), linetype = 2) + 
-        geom_line(aes(x=rr, y=p+CI), linetype = 2) + 
+        geom_line(aes(x = rr, y = p-CI), linetype = 2) + 
+        geom_line(aes(x = rr, y = p+CI), linetype = 2) + 
         geom_point(data = riskratio_data, aes(x = rr, y = pe, size = Abundance)) + 
         geom_line() + 
         ylab("p(elevation) m") + 
         xlab("Water inundation sensitivity") +
         theme_classic() +
-        theme(legend.position = c(0.2,0.85))
+        theme(legend.position = c(0.2, 0.85))
 
 p1
 
+# Save plot to graphs file 
 ggsave(p1, file = './graphs/floodingsensitivity_pelevation.png', 
        width = 4, 
        height = 4)
