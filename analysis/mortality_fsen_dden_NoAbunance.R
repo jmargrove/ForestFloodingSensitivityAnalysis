@@ -103,11 +103,13 @@ p2 <- ggplot(preds2, aes(x = dden, y = p)) +
   geom_point(data = riskratio_data, aes(x = dden, y = pe)) + 
   geom_line() + 
   ylab("p(elevation) m") + 
-  xlab("Water inundation sensitivity") +
+  xlab(bquote("Wood density g" ~cm^-3 )) +
   theme_classic() +
   theme(legend.position = c(0.2, 0.85))
 
 p2
+
+
 
 # Save plot to graphs file 
 ggsave(p2, file = './graphs/pelevation__dden_NoAbundance.png', 
