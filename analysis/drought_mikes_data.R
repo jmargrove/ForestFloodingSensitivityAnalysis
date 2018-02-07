@@ -36,7 +36,7 @@ rr_data$Abundance <- abn[!is.na(abn)]
 
 
 spn <- c("dry", "doxl", "Dzib", "Hfer", "Hner", "Hsan", "Kexc", "Pmal", "Ptom", "Sarg", 
-  "Sbec", "SfalX", "Sfag", "Sgib", "SmacX", "Smac", "Smec", "Sova", "Spar", "Spau")
+  "Sbec", "SfalX", "Sfag", "Sgiba", "SmacX", "Smac", "Smec", "Sova", "Spar", "Spau")
 gcb_data <- gcb_data[order(gcb_data$spp),]
 gcb_data$sp <- spn
 
@@ -49,9 +49,6 @@ ggplot(dt, aes(x = rr, y = resist)) +
   stat_smooth(method =lm) + 
   xlab("flooding sensitivity") + 
   ylab("resistance (MOB paper in CGB") 
-  
-
-ggplot(dt, aes(x = pe, y = resist)) + geom_text(aes(label = sp)) + stat_smooth(method = lm)
 
 
 ##### correlation of the variables 
@@ -61,6 +58,7 @@ with(dt, cor(resist, pe))
 
 m <- lm(resist ~ rr, dt)
 summary(m)
+
 
 m2 <- lm(pe ~ resist, dt)
 summary(m2)

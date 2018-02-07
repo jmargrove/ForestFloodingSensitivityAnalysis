@@ -7,6 +7,7 @@ rm(list = ls())
 
 # Import packages
 require(ggplot2)
+source('./functions/booter.R')
 
 # Import data 
 rr_data <- read.table("./data/riskratio_data.txt", header = TRUE)
@@ -66,7 +67,12 @@ p1 <- ggplot(preds, aes(x = log(dden), y = rr)) +
 p1
 
 # Boot strap for coef CIs 
-
+coef_CI <- booter(model = model, 
+                  data = rr_data, 
+                  preds = preds,
+                  coef = TRUE,
+                  n = 5000)
+coef_CI
 
 # saving the plot 
 ggsave(p1, file = "./graphs/log_fsen_vs_dden.png",
