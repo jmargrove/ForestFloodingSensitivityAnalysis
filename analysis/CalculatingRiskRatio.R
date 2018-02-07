@@ -20,13 +20,12 @@ pred1 <- expand.grid(sp = levels(data$sp),
 
 # Predict from model
 pred1$p <- predict(s3, pred1, type = "response", re.form = ~0)
-
+pred1$lo <- predict(s3, pred1, re.form = ~0)
 # Calculate the risk ratio per species 
 rr <- with(pred1, tapply(p, sp, diff))
 
 # Create data frame 
 riskratio_data <- data.frame(sp = levels(data$sp), rr = rr)
-
 # Write table to data folder 
 write.table(riskratio_data, file = './data/riskratio_data.txt')
 
