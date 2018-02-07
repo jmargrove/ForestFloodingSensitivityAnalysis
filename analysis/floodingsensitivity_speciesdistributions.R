@@ -2,8 +2,13 @@
 # title: flooding sensitivity response predicting species distributions 
 # author: James Margrove 
 
+# Clear work space 
+rm(list = ls ())
+
 # IMPORT FUNCTIONS AND PACKAGES
 require(ggplot2)
+require(car)
+
 source("./functions/aovPerVar.R")
 
 # IMPORT DATA 
@@ -27,10 +32,10 @@ ggplot(riskratio_data, aes(x = rr, y = pe, size = Abundance)) +
 # Model data with a weighted linear model 
 model <- lm(pe ~ rr + dden, weight = Abundance, data = riskratio_data)
 summary(model)
-car::vif(model)
+vif(model)
 
 # Anova test
-ma <- car::Anova(model)
+ma <- Anova(model)
 
 # Anova percentage variation 
 aovPerVar(ma)
@@ -48,14 +53,13 @@ preds <- expand.grid(rr = with(riskratio_data,
 
 preds$p <- predict(model, preds, type = "response")
 preds$CI <- predict(model, preds, type = "response", se.fit = TRUE)$se.fit
-colnames(preds)
 
 # Graph the predictions 
 p1 <- ggplot(preds, aes(x = rr, y = p)) + 
         geom_line() + 
-        geom_ribbon(aes(ymin = p - CI*1.96, ymax = p + CI*1.96), alpha = 0.22) +
-        geom_line(aes(x = rr, y = p-CI*1.96), linetype = 2) + 
-        geom_line(aes(x = rr, y = p+CI*1.96), linetype = 2) + 
+        geom_ribbon(aes(ymin = p - CI * 1.96, ymax = p + CI * 1.96), alpha = 0.22) +
+        geom_line(aes(x = rr, y = p-CI * 1.96), linetype = 2) + 
+        geom_line(aes(x = rr, y = p+CI * 1.96), linetype = 2) + 
         geom_point(data = riskratio_data, aes(x = rr, y = pe, size = Abundance), alpha = 0.3) + 
         geom_line() + 
         ylab("p(elevation) m") + 
@@ -85,13 +89,13 @@ colnames(preds)
 # Graph the predictions 
 p2 <- ggplot(preds, aes(x = dden, y = p)) + 
   geom_line() + 
-  geom_ribbon(aes(ymin = p - CI*1.96, ymax = p + CI*1.96), alpha = 0.22) +
-  geom_line(aes(x = dden, y = p-CI*1.96), linetype = 2) + 
-  geom_line(aes(x = dden, y = p+CI*1.96), linetype = 2) + 
+  geom_ribbon(aes(ymin = p - CI * 1.96, ymax = p + CI * 1.96), alpha = 0.22) +
+  geom_line(aes(x = dden, y = p-CI * 1.96), linetype = 2) + 
+  geom_line(aes(x = dden, y = p+CI * 1.96), linetype = 2) + 
   geom_point(data = riskratio_data, aes(x = dden, y = pe, size = Abundance), alpha = 0.3) + 
   geom_line() + 
   ylab("p(elevation) m") + 
-  xlab("Water inundation sensitivity") +
+  xlab("Wood density") +
   theme_classic() +
   theme(legend.position = c(0.2, 0.85))
 

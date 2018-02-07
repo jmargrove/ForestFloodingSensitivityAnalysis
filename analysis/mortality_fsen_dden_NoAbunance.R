@@ -10,7 +10,7 @@ require(ggplot2)
 require(car)
 source("./functions/aovPerVar.R")
 
-# IMPORT DATA 
+# Import data 
 riskratio_data <- read.table("./data/riskratio_data.txt", header = TRUE)
 spdata <- read.table("./data/spdata.txt", header = TRUE)
 riskratio_data$pe <- read.table("./data/pelev_data.txt", header = TRUE)$pe
@@ -63,21 +63,21 @@ preds$CI <- predict(object = model,
 
 # Graph the predictions 
 p1 <- ggplot(preds, aes(x = rr, y = p)) + 
-  geom_line() + 
-  geom_ribbon(aes(ymin = p - CI, ymax = p + CI), alpha = 0.22) +
-  geom_line(aes(x = rr, y = p-CI*1.96), linetype = 2) + 
-  geom_line(aes(x = rr, y = p+CI*1.96), linetype = 2) + 
-  geom_point(data = riskratio_data, aes(x = rr, y = pe)) + 
-  geom_line() + 
-  ylab("p(elevation) m") + 
-  xlab("Water inundation sensitivity") +
-  theme_classic() +
-  theme(legend.position = c(0.2, 0.85))
+        geom_line() + 
+        geom_ribbon(aes(ymin = p - CI * 1.96, ymax = p + CI * 1.96), alpha = 0.22) +
+        geom_line(aes(x = rr, y = p-CI * 1.96), linetype = 2) + 
+        geom_line(aes(x = rr, y = p+CI * 1.96), linetype = 2) + 
+        geom_point(data = riskratio_data, aes(x = rr, y = pe)) + 
+        geom_line() + 
+        ylab("p(elevation) m") + 
+        xlab("Water inundation sensitivity") +
+        theme_classic() +
+        theme(legend.position = c(0.2, 0.85))
 
 p1
 
 # Save plot to graphs file 
-ggsave(p1, file = './graphs/pelevation_fsen_dden_NoAbundance.png', 
+ggsave(p1, file = './graphs/pelevation_fsen_NoAbundance.png', 
        width = 4, 
        height = 4)
 
@@ -97,9 +97,9 @@ preds2$CI <- predict.lm(object = model,
 # Graph the predictions 
 p2 <- ggplot(preds2, aes(x = dden, y = p)) + 
   geom_line() + 
-  geom_ribbon(aes(ymin = p - CI, ymax = p + CI), alpha = 0.22) +
-  geom_line(aes(x = dden, y = p - CI*1.96), linetype = 2) + 
-  geom_line(aes(x = dden, y = p + CI*1.96), linetype = 2) + 
+  geom_ribbon(aes(ymin = p - CI * 1.96, ymax = p + CI * 1.96), alpha = 0.22) +
+  geom_line(aes(x = dden, y = p - CI * 1.96), linetype = 2) + 
+  geom_line(aes(x = dden, y = p + CI * 1.96), linetype = 2) + 
   geom_point(data = riskratio_data, aes(x = dden, y = pe)) + 
   geom_line() + 
   ylab("p(elevation) m") + 
@@ -110,7 +110,7 @@ p2 <- ggplot(preds2, aes(x = dden, y = p)) +
 p2
 
 # Save plot to graphs file 
-ggsave(p1, file = './graphs/pelevation__dden_NoAbundance.png', 
+ggsave(p2, file = './graphs/pelevation__dden_NoAbundance.png', 
        width = 4, 
        height = 4)
 
