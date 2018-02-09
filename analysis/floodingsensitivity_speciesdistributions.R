@@ -24,13 +24,16 @@ dden_data <- read.table("./data/dden_adult.txt", header = TRUE)
 dden_data <- dden_data[order(dden_data$sp), ]
 riskratio_data$dden <- dden_data$dden_adult
 
+# rm outliers 
+#riskratio_data <- riskratio_data[-c(6,12),]
+
 # Explore 
 ggplot(riskratio_data, aes(x = rr, y = pe, size = Abundance)) + 
   geom_point() + 
   stat_smooth(method = lm)
 
 # Model data with a weighted linear model 
-model <- lm(pe ~ rr + dden, weight = Abundance, data = riskratio_data)
+model <- lm(pe ~ rr, weight = Abundance, data = riskratio_data)
 summary(model)
 vif(model)
 
