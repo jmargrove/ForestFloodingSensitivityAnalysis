@@ -30,6 +30,8 @@ bootRD <- apply(int.boot, 2, function(x){tapply(x, rep(1:16,2), RiskDiff)})
 rr_data$SD <- apply(bootRD, 1, sd)
 
 
+
+
 ##### Calculating the abundance 
 abn <- with(spdata[spdata$sp %in% rr_data$sp,], tapply(sp, sp, length))
 rr_data$Abundance <- abn[!is.na(abn)]
