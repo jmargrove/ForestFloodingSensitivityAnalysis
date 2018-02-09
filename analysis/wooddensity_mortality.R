@@ -16,17 +16,29 @@ dden_data <- read.table("./data/dden_adult.txt", header = TRUE)
 dden_data <- dden_data[order(dden_data$sp), ]
 rr_data$dden <- dden_data$dden_adult
 
+rr_data$fden <- cut(rr_data$dden, 
+                           breaks = c(min(rr_data$dden)-.1, 
+                                      mean(rr_data$dden), 
+                                      max(rr_data$dden)), 
+                           labels = c("low","high"))
+
+
 # Exploration 
-p1 <- ggplot(rr_data, aes(x = log(dden), y = log(rr))) + 
+p1 <- ggplot(rr_data, aes(x = fden, y = rr)) + 
   geom_point() + 
   stat_smooth(method = lm, color = '#000000', size = 0.5) + 
   ylab("log(water inundation sensitivity)") + 
   xlab("log(adult wood density)") + 
   theme_classic()
 
+p1
+
 # Model the data 
-model <- lm(log(rr) ~ log(dden), data = rr_data)
+model <- lm(log(rr) ~ fden, data = rr_data)
 summary(model)
+
+
+
 
 # Evaluation 
 preds <- data.frame(dden = seq(from = min(rr_data$dden), 
@@ -46,21 +58,21 @@ preds$CI <- predict(model,
 # Plot the graph 
 p1 <- ggplot(preds, aes(x = log(dden), y = rr)) + 
              geom_line() + 
-             geom_ribbon(aes(ymin = rr - CI, 
-                             ymax = rr + CI), 
+             geom_ribbon(aes(ymin = rr - CI * 1.96, 
+                             ymax = rr + CI * 1.96), 
                          alpha = 0.22) +
              geom_line(aes(x = log(dden), 
-                           y = rr - CI), 
+                           y = rr - CI * 1.96), 
                        linetype = 2) + 
              geom_line(aes(x = log(dden), 
-                           y = rr + CI), 
+                           y = rr + CI * 1.96), 
                        linetype = 2) + 
              geom_point(data = rr_data, 
                         aes(x = log(dden), 
                             y = log(rr))) + 
              geom_line() + 
              ylab("log(water inundation sensitivity)") + 
-             xlab("log(adult wood density)") +
+             xlab(bquote("log(Wood density g" ~cm^-3~")" )) +
              theme_classic() +
              theme(legend.position = c(0.2, 0.85))
 

@@ -53,24 +53,42 @@ sortout <- function(x){
 
 spde_preds$pS <- unlist(with(spde_preds, tapply(p, sp, function(x) sortout(x))))
 
- 
+
 riskratio_data$pall <- spde_preds[which(spde_preds$elev == 0), ]$pS
 
 
-ggplot(riskratio_data, aes(x = pall, y = rr)) + geom_point()
-model <- (lm(rr ~ pall * fden, riskratio_data))
 
+
+ggplot(riskratio_data, aes(x = rr, y = pall)) + geom_point()
+model <- lm(pall ~ rr + fden, weight = Abundance, riskratio_data)
+summary(model)
+
+model <- lm(pall ~ rr, riskratio_data[riskratio_data$fden == "high",])
+summary(model)
+
+
+ggplot(data = riskratio_data, aes(x = rr, y = pall)) + 
+  geom_point() + facet_wrap(~ fden) + 
+  stat_smooth(method = lm) + 
+  geom_label(label = sp)
+
+
+model <- lm(pall ~ 0 + dden + rr, riskratio_data[riskratio_data$fden == "low",])
+
+
+##### this is a good possible model 
+model <- lm(pe ~ rr + dden, weight = Abundance, riskratio_data)
 summary(model)
 ma <- car::Anova(model)
 aovPerVar(ma)
 
+res
 
 ##### bootstrap the data 
-preds <- expand.grid(pall = with(riskratio_data, 
-                               seq(from = min(pall), 
-                                   to = max(pall), 
-                                   length = 100)),
-                     fden = c("low" , "high"))
+preds <- expand.grid(rr = with(riskratio_data, 
+                                 seq(from = min(rr), 
+                                     to = max(rr), 
+                                     length = 100)))
 
 preds$p <- predict(model, preds, type = "response")
 preds$CI <- predict(object = model, 
@@ -85,15 +103,12 @@ col1 <- "#C5283D"
 col2 <-  "#255F85"
 
 # Graph the predictions 
-p1 <- ggplot(preds, aes(x = pall, y = p, fill = fden)) + 
-  geom_ribbon(aes(ymin = p - CI * 1.96, ymax = p + CI * 1.96), alpha = 0.5) +
-  geom_point(data = riskratio_data, aes(x = pall, y = rr, color = fden)) + 
+p1 <- ggplot(preds, aes(x = rr, y = p)) + 
+  geom_ribbon(aes(ymin = p - CI * 1.96, ymax = p + CI * 1.96), fill = col1) +
+  geom_point(data = riskratio_data, aes(x = rr, y = pall, color = fden)) + 
   ylab("flooding sensitivity") + 
-  geom_line(aes(color = fden), size = 1) + 
-  geom_line(size = 0.33) + 
-  geom_line(data = preds, aes(y = p - CI * 1.96, color = fden), linetype = 2, alpha = 0.222) + 
-  geom_line(data = preds, aes(y = p + CI * 1.96, color = fden), linetype = 2, alpha = 0.222) + 
-  xlab("p(mid) @ 20 m") +
+  geom_line(aes(x = rr,  y = p)) + 
+  xlab("p(0)") +
   theme_classic() +
   theme(legend.position = c(0.8, 0.85)) +
   scale_fill_manual(values = c(col1, col2)) +
@@ -101,7 +116,9 @@ p1 <- ggplot(preds, aes(x = pall, y = p, fill = fden)) +
 
 p1
 
-#Save plot to graphs file 
+
+
+Save plot to graphs file 
 ggsave(p1, file = './graphs/fsen_fden_pall_interaction.png', 
        width = 4, 
        height = 4)

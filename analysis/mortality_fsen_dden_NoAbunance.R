@@ -19,6 +19,9 @@ dden_data <- read.table("./data/dden_adult.txt", header = TRUE)
 dden_data <- dden_data[order(dden_data$sp), ]
 riskratio_data$dden <- dden_data$dden_adult
 
+# rm outliers 
+#riskratio_data <- riskratio_data[-c(6,12),]
+
 # Calculating the abundance 
 abn <- with(spdata[spdata$sp %in% riskratio_data$sp,], tapply(sp, sp, length))
 riskratio_data$Abundance <- abn[!is.na(abn)]
