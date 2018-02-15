@@ -2,7 +2,12 @@
 # title: organising reubens data for analysis 
 # author: James Margrove 
 
+rm(list=ls())
 
+# Import packages
+require(ggplot2)
+
+# Import data 
 a1_data <- read.table("./data/Reuben_data/A1.txt", header = TRUE)
 a2_data <- read.table("./data/Reuben_data/A2.txt", header = TRUE)
 a3_data <- read.table("./data/Reuben_data/A3.txt", header = TRUE)
@@ -10,35 +15,65 @@ s1_data <- read.table("./data/Reuben_data/S1.txt", header = TRUE)
 s2_data <- read.table("./data/Reuben_data/S2.txt", header = TRUE)
 s3_data <- read.table("./data/Reuben_data/S3.txt", header = TRUE)
 
-levels(a2_data$Species)
-# Filter species of interest
+data <- rbind(a1_data, a2_data, a3_data, s1_data, s2_data, s3_data)
 
+# Points with elevation 
+elev <- read.csv("./data//Reuben_data/pointsWithElevation.csv")
+elev$plot <- paste(elev$Forest, elev$id, sep = "")
+
+# Species of interest
 spp <- c("Dryobalanopslanceolata", "Parashoreamalaanonan", "Parashoreatomentella", 
          "Shorealeprosula", "Shoreamacroptera", "Shoreaparvifolia", 
          "Shoreasmithiana",  "Shoreaseminis", "Shoreawaltonii",  
          "Shoreamecistopteryx", "Shoreabeccariana",  "Shoreapauciflora", 
          "Shoreaxanthophylla", "Shoreafalciferoides", "Shoreagibosa",
          "Shoreaacumitisima")
+spp <- spp[order(spp)]
 
+# Filter for species of interest above 50cm 
+data <- data[data$Diam2000 > 50 & data$Species %in% spp,]
+head(data)
 
-data <- rbind(a1_data, a2_data, a3_data, s1_data, s2_data, s3_data)
+# Add in the elevations of the 1 ha plots 
+el <- numeric(dim(data)[1])
+for(i in 1:dim(data)[1]){
+  pt <- which(elev$plot == data[i,"Forest"] & elev$ha4plot == data[i, "ha4plot"])
+  el[i] <- elev[pt, "sepilok_DT"]
+}
 
-spn <- with(data[data$Species %in% spp,], tapply(Species, Species, length))
-df <- with(data[data$Species %in% spp,], tapply(Species, list(Species, Forest), length))
+data$el <- el - 57.83
+head(data)
 
+# Add in the wood density 
+dden_data <- read.table('./data/dden_adult.txt', header = T)
+dden_data <- dden_data[order(dden_data$sp),]
+#dden_data <- dden_data[-c(4, 7),]
+head(dden_data)
 
-dt <- df[rownames(df) %in% spp,]
+dden <- numeric(dim(data)[1])
+for(i in 1:16){
+  pt <- which(data$Species == spp[i])
+  dden[pt] <- dden_data[i, "dden_adult"]
+}
 
-df <- with(data[data$Species %in% spp,], tapply(Species, list(Species, ha4plot, Forest), length))
+data$dden <- dden 
+head(data)
+# Add in the wood density 
+rr_data <- read.table('./data/riskratio_data.txt', header = T)
 
-df
-dt <- df[rownames(df) %in% spp,]
-str(a1_data)
+rr <- numeric(dim(data)[1])
+for(i in 1:dim(rr_data)[1]){
+  pt <- which(data$Species == spp[i])
+  rr[pt] <- rr_data[i, "rr"]
+}
 
+data$rr <- rr 
 
-
-
-
-dt
+tail(data, 20)
+mrr <- with(data, tapply(rr, Species, mean))
+mrr[!is.na(mrr)]
+rr_data$rr
+# save the data frame 
+write.table(data, "./data/Reuben_data/data_cleaned.txt")
 
 
