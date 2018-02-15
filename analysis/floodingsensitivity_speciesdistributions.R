@@ -28,14 +28,16 @@ riskratio_data$dden <- dden_data$dden_adult
 #riskratio_data <- riskratio_data[-c(6,12),]
 
 # Explore 
-ggplot(riskratio_data, aes(x = rr, y = pe, size = Abundance)) + 
+ggplot(riskratio_data, aes(x = rr, y = pe, size = Abundance/160)) + 
   geom_point() + 
   stat_smooth(method = lm)
 
 # Model data with a weighted linear model 
-model <- lm(pe ~ rr, weight = Abundance, data = riskratio_data)
+model <- lm(pe ~ rr + dden, weight = Abundance/160, data = riskratio_data)
 summary(model)
 vif(model)
+save(model, file = "./models/pele_fsen_dden_Abundance")
+
 
 # Anova test
 ma <- Anova(model)
@@ -53,9 +55,9 @@ preds <- expand.grid(rr = with(riskratio_data,
                                    to = max(rr), 
                                    length = 100)), 
                      dden = mean(riskratio_data$dden))
-
-preds$p <- predict(model, preds, type = "response")
-preds$CI <- predict(model, preds, type = "response", se.fit = TRUE)$se.fit
+w <- 1
+preds$p <- predict(model, preds, type = "response", weights = w)
+preds$CI <- predict(model, preds, type = "response", se.fit = TRUE, weights = w)$se.fit
 
 # Graph the predictions 
 p1 <- ggplot(preds, aes(x = rr, y = p)) + 
