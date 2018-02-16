@@ -48,7 +48,7 @@ for(i in 1:dim(data)[1]){
 }
 
 # subtract the bottom of the plot 
-data$el <- el - 57.83 
+data$el <- el - 57.83
 
 # Add in the wood density 
 dden_data <- read.table('./data/dden_adult.txt', header = T)
@@ -98,6 +98,27 @@ pt <- as.vector(with(data, tapply(el, list(Forest, ha4plot), mean)))
 dden_data$dden_adult[-c(4,7, 13)] == sp[order(names(sp))]
 pt == as.vector(with(elev, tapply(sepilok_DT, list(plot, ha4plot), mean))) - 57.83
 
+
+
+# Abundance 
+relevel
+for(i in 13:1) {
+  data$Species <- relevel(data$Species, ref = sort(levels(data$Species))[i])
+}
+
+
+
+abn <- with(data, tapply(el, Species, length))
+ABN <- numeric(dim(data)[1])
+
+for(i in 1:13){
+  a <- which(data$Species == levels(data$Species)[i])
+    ABN[a] <- abn[i]
+}
+
+data$abn <- ABN
+with(data, tapply(abn, Species, mean)) == abn
+
 # Elevations are paire correctly to plots 
 # wood densities are paird to species 
 # water innundation sensitivites are paired to species 
@@ -108,10 +129,5 @@ data <- data[data$Forest != "A3",]
 # Drop unused levels 
 data <- droplevels(data)
 
-
 # save the data frame 
 write.table(data, "./data/Reuben_data/data_cleaned.txt")
-
-
-
-

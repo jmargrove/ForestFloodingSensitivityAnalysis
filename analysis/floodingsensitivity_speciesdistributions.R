@@ -33,8 +33,10 @@ ggplot(riskratio_data, aes(x = rr, y = pe, size = Abundance/160)) +
   stat_smooth(method = lm)
 
 # Model data with a weighted linear model 
-model <- lm(pe ~ rr + dden, weight = Abundance/160, data = riskratio_data)
+riskratio_data$nelev <- riskratio_data$pe/88*56
+model <- lm(pe ~ rr + dden, weights = Abundance, data = riskratio_data)
 summary(model)
+
 vif(model)
 save(model, file = "./models/pele_fsen_dden_Abundance")
 
