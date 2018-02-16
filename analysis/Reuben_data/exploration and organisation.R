@@ -30,9 +30,15 @@ spp <- c("Dryobalanopslanceolata", "Parashoreamalaanonan", "Parashoreatomentella
          "Shoreaacumitisima")
 spp <- spp[order(spp)]
 
-# Filter for species of interest above 50cm 
+# Filter for species of interest above 50cm, and those with different lower limits
+sxanDT <- data[data$Species == "Shoreaxanthophylla" & data$Diam2000 > 30 & 
+                 data$Diam2000 < 50,]
+sbecDT <- data[data$Species == "Shoreabeccariana" & data$Diam2000 > 30 & 
+                 data$Diam2000 < 50,]
+smacDT <- data[data$Species == "Shoreamacroptera" & data$Diam2000 > 40 & 
+                 data$Diam2000 < 50,]
 data <- data[data$Diam2000 > 50 & data$Species %in% spp,]
-head(data)
+data <- rbind(data, sxanDT, sbecDT, smacDT)
 
 # Add in the elevations of the 1 ha plots 
 el <- numeric(dim(data)[1])
@@ -41,8 +47,8 @@ for(i in 1:dim(data)[1]){
   el[i] <- elev[pt, "sepilok_DT"]
 }
 
-data$el <- el - 57.83
-head(data)
+# subtract the bottom of the plot 
+data$el <- el - 57.83 
 
 # Add in the wood density 
 dden_data <- read.table('./data/dden_adult.txt', header = T)
@@ -73,7 +79,39 @@ tail(data, 20)
 mrr <- with(data, tapply(rr, Species, mean))
 mrr[!is.na(mrr)]
 rr_data$rr
+
+# Drop unused levels 
+data <- droplevels(data)
+
+#Double check that everything matches up 
+# wood density 
+sp <- with(data, tapply(dden, Species, mean))
+dden_data$dden_adult[-c(4,7, 13)] == sp[order(names(sp))]
+
+# rr 
+sp <- with(data, tapply(rr, Species, mean))
+rr_data$rr[-c(4,7, 13)] == sp[order(names(sp))]
+
+# 1 ha plot elevation 
+head(data)
+pt <- as.vector(with(data, tapply(el, list(Forest, ha4plot), mean)))
+dden_data$dden_adult[-c(4,7, 13)] == sp[order(names(sp))]
+pt == as.vector(with(elev, tapply(sepilok_DT, list(plot, ha4plot), mean))) - 57.83
+
+# Elevations are paire correctly to plots 
+# wood densities are paird to species 
+# water innundation sensitivites are paired to species 
+
+# remove A3 from the analysis because it is within the 160ha forest plot 
+data <- data[data$Forest != "A3",]
+
+# Drop unused levels 
+data <- droplevels(data)
+
+
 # save the data frame 
 write.table(data, "./data/Reuben_data/data_cleaned.txt")
+
+
 
 
