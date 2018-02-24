@@ -1,6 +1,21 @@
 #####################################################################################
-# title: booty: a function for bootstrapping data
-# author: James Margrove
+#' @title booty: a function for bootstrapping data
+#' @author James Margrove
+#'
+#'
+#'@param model model to be boot strapped 
+#'@param data - data for sampling with replacement 
+#'@param preds - prediction data frame for the model
+#'@param n - number of iterations of bootstraps 
+#'@param coef - boolean, if true calculate coefs, if false calculate preds 
+#'@param CI - string default value is 95% calculate 95% quatiles for distribution 
+#'@param quantReg - calculate predictions for a quantile regression analysi 
+#'
+#'@dependancies foreach 
+#'
+#'@return bootstrapped predictions or confidence intervals for lm or quantreg 
+#'
+
 
 booter <- function(model, data, preds, n, coef = FALSE,  CI = "95%", quantReg = FALSE) {
   if(!coef) {
@@ -34,5 +49,4 @@ booter <- function(model, data, preds, n, coef = FALSE,  CI = "95%", quantReg = 
   else if(CI == "SD") {
     apply(boots, 1, sd)
   }
-  
 }
