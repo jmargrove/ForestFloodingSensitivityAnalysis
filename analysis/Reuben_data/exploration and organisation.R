@@ -14,13 +14,14 @@ a3_data <- read.table("./data/Reuben_data/A3.txt", header = TRUE)
 s1_data <- read.table("./data/Reuben_data/S1.txt", header = TRUE)
 s2_data <- read.table("./data/Reuben_data/S2.txt", header = TRUE)
 s3_data <- read.table("./data/Reuben_data/S3.txt", header = TRUE)
-
 data <- rbind(a1_data, a2_data, a3_data, s1_data, s2_data, s3_data)
 
 # Points with elevation 
-elev <- read.csv("./data//Reuben_data/pointsWithElevation.csv")
-elev$plot <- paste(elev$Forest, elev$id, sep = "")
-
+#elev <- read.csv("./data/Reuben_data/pointsWithElevation.csv")
+elev <- read.table("./data/Reuben_data/reubenPlotElevationData.txt", header = TRUE)
+elev$Q <- as.numeric(substr(elev$plot, 3, 4))
+elev$plot <- substr(elev$plot, 1, 2)       
+elev
 # Species of interest
 spp <- c("Dryobalanopslanceolata", "Parashoreamalaanonan", "Parashoreatomentella", 
          "Shorealeprosula", "Shoreamacroptera", "Shoreaparvifolia", 
@@ -39,16 +40,24 @@ smacDT <- data[data$Species == "Shoreamacroptera" & data$Diam2000 > 40 &
                  data$Diam2000 < 50,]
 data <- data[data$Diam2000 > 50 & data$Species %in% spp,]
 data <- rbind(data, sxanDT, sbecDT, smacDT)
-
+head(data)
 # Add in the elevations of the 1 ha plots 
 el <- numeric(dim(data)[1])
 for(i in 1:dim(data)[1]){
-  pt <- which(elev$plot == data[i,"Forest"] & elev$ha4plot == data[i, "ha4plot"])
-  el[i] <- elev[pt, "sepilok_DT"]
+  pt <- which(elev$plot == data[i, "Forest"] & elev$Q == data[i, "ha4plot"])
+  if(length(pt) == 0L){
+    el[i] <- NA
+  }else{
+    el[i] <- elev[pt, "X_mean_1"]
+  }
 }
 
+el
 # subtract the bottom of the plot 
-data$el <- el - 57.83
+data$el <- el
+
+data[is.na(data$el),]
+data[data$Forest == "A3", "el"]
 
 # Add in the wood density 
 dden_data <- read.table('./data/dden_adult.txt', header = T)
@@ -69,6 +78,7 @@ rr_data <- read.table('./data/riskratio_data.txt', header = T)
 
 rr <- numeric(dim(data)[1])
 for(i in 1:dim(rr_data)[1]){
+  
   pt <- which(data$Species == spp[i])
   rr[pt] <- rr_data[i, "rr"]
 }
@@ -95,9 +105,10 @@ rr_data$rr[-c(4,7, 13)] == sp[order(names(sp))]
 # 1 ha plot elevation 
 head(data)
 pt <- as.vector(with(data, tapply(el, list(Forest, ha4plot), mean)))
-dden_data$dden_adult[-c(4,7, 13)] == sp[order(names(sp))]
-pt == as.vector(with(elev, tapply(sepilok_DT, list(plot, ha4plot), mean))) - 57.83
+pt == as.vector(with(elev, tapply(sepilok_DT, list(plot, ha4plot), mean))) 
 
+#min Reuben plot elevation 
+min(pt, na.rm = TRUE)
 
 
 # Abundance 
@@ -125,9 +136,12 @@ with(data, tapply(abn, Species, mean)) == abn
 
 # remove A3 from the analysis because it is within the 160ha forest plot 
 data <- data[data$Forest != "A3",]
-
-# Drop unused levels 
+data
 data <- droplevels(data)
+
+
+data <- data[!is.na(data$el),]
+
 
 # save the data frame 
 write.table(data, "./data/Reuben_data/data_cleaned.txt")

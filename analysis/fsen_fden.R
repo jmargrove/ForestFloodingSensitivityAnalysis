@@ -22,12 +22,10 @@ rr_data$fden <- cut(rr_data$dden,
                                max(rr_data$dden)), 
                     labels = c("low","high"))
 
-
-
-
+rr_data
 
 # Exploration 
-p1 <- ggplot(rr_data, aes(x = fden, y = log(rr))) + 
+p1 <- ggplot(rr_data, aes(x = fden, y = (rr))) + 
   geom_point() + 
   stat_smooth(method = lm, color = '#000000', size = 0.5) + 
   ylab("log(water inundation sensitivity)") + 
@@ -35,6 +33,7 @@ p1 <- ggplot(rr_data, aes(x = fden, y = log(rr))) +
   theme_classic()
 
 p1
+
 
 # Model the data 
 rr_data$fden <- relevel(rr_data$fden, ref = "high")
@@ -56,6 +55,8 @@ summary(model2)
 plot(model2)
 rr_data$resid2 <- residuals(model2)
 with(rr_data, tapply(resid2, fden, var))*100
+
+
 
 # Evaluation 
 preds <- data.frame(fden = c("low", "high"))
@@ -87,7 +88,7 @@ p1
 
 
 # Boot strap for coef CIs 
-coef_CI <- booter(model = model, 
+coef_CI <- booter(model = model2, 
                   data = rr_data, 
                   preds = preds,
                   coef = TRUE,

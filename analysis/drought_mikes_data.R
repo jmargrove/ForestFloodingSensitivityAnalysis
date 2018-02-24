@@ -16,41 +16,104 @@ gcb_data <- read.table("./data/GCB2017.txt", header = TRUE)
 ncc_data <- read.table("./data/NCC2017.txt", header = TRUE)
 rr_data <- read.table("./data/riskratio_data.txt", header = TRUE)
 
-spdata <- read.table("./data/spdata.txt", header = TRUE)
+spdata <- read.table("./data/forestplot_160_spatial_data.txt", header = TRUE)
 rr_data$pe <- read.table("./data/pelev_data.txt", header = TRUE)$pe
-rr_data$dden <- read.table("./data/dden_adult.txt", header = TRUE)$dden
-
-spdata <- read.table("./data/spdata.txt", header = TRUE)
+dden_data <- read.table("./data/dden_adult.txt", header = TRUE)
+rr_data$dden <- dden_data[order(dden_data$sp),]$dden_adult
+rr_data
 rr_data$pe <- read.table("./data/pelev_data.txt", header = TRUE)$pe
-
-### sd data for the rr 
-int.boot <- read.table("./data/FLoodIntSp.txt", header = TRUE)
-RiskDiff <- function(a){a[2]-a[1]}
-bootRD <- apply(int.boot, 2, function(x){tapply(x, rep(1:16,2), RiskDiff)})
-rr_data$SD <- apply(bootRD, 1, sd)
-
-
 
 
 ##### Calculating the abundance 
 abn <- with(spdata[spdata$sp %in% rr_data$sp,], tapply(sp, sp, length))
 rr_data$Abundance <- abn[!is.na(abn)]
 
-
-spn <- c("dry", "doxl", "Dzib", "Hfer", "Hner", "Hsan", "Kexc", "Pmal", "Ptom", "Sarg", 
-  "Sbec", "SfalX", "Sfag", "Sgiba", "SmacX", "Smac", "Smec", "Sova", "Spar", "Spau")
+spn <- c("Dry", "doxl", "Dzib", "Hfer", "Hner", "Hsan", "Kexc", "Pmal", "Ptom", "Sarg", 
+  "Sbec", "SfalX", "Sfag", "Sgib", "SmacX", "Smac", "Smec", "Sova", "Spar", "Spau")
 gcb_data <- gcb_data[order(gcb_data$spp),]
 gcb_data$sp <- spn
 
 
 dt <- merge(rr_data, gcb_data, by=c("sp"))
 dt
-##### plot the data 
-ggplot(dt, aes(x = rr, y = resist)) + 
-  geom_text(aes(label = sp)) + 
-  stat_smooth(method =lm) + 
-  xlab("flooding sensitivity") + 
-  ylab("resistance (MOB paper in CGB") 
+
+m <- (lm(rr ~  pe + dden + log(resist), dt))
+summary(m)
+anova(m)
+
+with(dt, plot(resist, pe))
+
+ggplot(dt, aes(x = rr, y = resist)) + geom_point() + geom_text(aes(label = sp))
+summary(lm(resist ~ rr, dt))
+
+require(vegan)
+mat <- as.matrix(cbind(d = dt$resist, w = dt$rr))
+
+mdm <- metaMDS(mat, )
+mdm
+
+p <- prcomp(mat)
+summary(p)
+
+p[1,]
+str(p)
+?metaMDS
+
+?prcomp
+
+biplot(p)
+?ndm
+
+as.data.frame(p$rotation[,1:2])
+
+
+m <- prcomp(~ resist * rr, data = dt, scale = TRUE)
+summary(m)
+axes <- predict(m, dt)
+axes
+
+plot(axes[,2], dt$el)
+
+m = (lm(pe ~ rr + dden, dt, weights = Abundance))
+summary(m)
+anova(m)
+
+pred = data.frame()
+predict(m, )
+
+#### spdata 
+spdt <- data.frame(sp = levels(spdata$sp), 
+                   elev = with(spdata, tapply(elev, sp, median)), 
+                   a = with(spdata, tapply(sp, sp, length)),
+                   dden = with(spdata, tapply(dden, sp, median)))
+head(spdt)
+
+dt <- merge(spdt, gcb_data, by=c("sp"))
+dt
+
+### 
+load("./models/pele_fsen_dden_Abundance")
+summary(model)
+
+coef <- summary(model)$coef
+alpha = coef[1]
+betaRR <- coef[2]
+betaDD <- coef[3]
+
+equation <- function(el, dden) {
+  (el + (-1 * alpha) + (-1 * betaDD * dden))/(betaRR)
+}
+
+dt$rr <- equation(dt$elev, dt$dden)
+dt
+
+ggplot(dt, aes(x= resist, y =rr)) + geom_point() + geom_text(aes(label = sp))
+
+dt
+
+rr_data
+
+summary(lm(resist ~ rr,  weights = a, data = dt))
 
 
 ##### correlation of the variables 
