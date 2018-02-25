@@ -10,15 +10,15 @@
 
 
 sortToPoly <- function(coords){
-  source("./functions/dist.R")
+  source("./functions/pointDist.R")
   d <-  0
   for(i in 2:4){
-    d[i] <- dist(coords[1,], coords[i,])
+    d[i] <- pointDist(coords[1,], coords[i,])
   }
   
   d2 <- numeric(4)
   for(i in c(1,3,4)){
-    d2[i] <- dist(coords[2,], coords[i,])
+    d2[i] <- pointDist(coords[2,], coords[i,])
   }
   
   if(max(d) > max(d2)){
