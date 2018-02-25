@@ -18,7 +18,7 @@ spatial_data <- read.table("./data/forestplot_160_spatial_data.txt", header = TR
 plotExtent <- read.table("./data/plotExtent.txt", header = TRUE)
 # Reubens data (Sort out later )
 #reu_data <- read.table( "./data/Reuben_data/data_cleaned.txt", header = TRUE)
-
+648/3
 # Cut the data to ensure that 
 Xbreaks <- seq(plotExtent[1,"X50N"], plotExtent[3,"X50N"], length = 37)  
 Ybreaks <- seq(plotExtent[1,"Y50N"], plotExtent[2,"Y50N"], length = 19)  
@@ -59,48 +59,57 @@ linerEQ <- function(int, slope, x){
 
 n = as.integer(dim(spat_data)[1]/3)
 
-qrSpatial <- function(){
-  rown <- sample(1:dim(spat_data)[1], replace = T, size = n)
-  samp <- spat_data[rown,]
+qrSpatial <- function(data){
+  rown <- sample(1:dim(data)[1], replace = T, size = n)
+  samp <- data[rown,]
   coords_dist <- dist(cbind(samp$x, samp$y))
   dden_dist <- dist(samp$d)
   mt <- mantel.rtest(coords_dist, dden_dist, nrepet = 999)
   if(mt$pvalue > 0.05){
-    
     qrmod <- rq(e ~ d, data = samp, tau = taus)
-    p <- predict(qrmod, data.frame(d = seq(min(spat_data$d), max(spat_data$d), length = 100)))
+    p <- predict(qrmod, data.frame(d = seq(min(data$d), max(data$d), length = 100)))
     return(as.vector(p))
   }
 }
 
+# Boot strap without the data
+dist <- foreach(i = 1:5000, .combine = cbind) %do% qrSpatial(data = spat_data)
 
-dist <- foreach(i = 1:5000, .combine = cbind) %do% qrSpatial()
+# save the boot strap 
+write.table(dist, file = "./data/boots_triangle_wden.txt")
 
-
-
-dim(dist)
-plot(density(dist[1,]))
 ## how many were successsfully independent 
-dim(dist)
 mdist <- apply(dist, 1, mean)
 
+# prediction data frame 
 preds <- expand.grid(d = seq(min(spat_data$d), max(spat_data$d), length = 100), taus = as.factor(taus))
 preds$e <- apply(dist, 1, mean)
 CI <- apply(dist, 1, quantile, c(0.025, 0.975))
 preds$CI025 <- CI[1,]
 preds$CI975 <- CI[2,]
 
+# Colors for CI ribbon 
 cols <- c("#8CB369", "#F4E285", "#4C8577","#F4A259", "#BC4B51")
 
-ggplot(preds[preds$d < 0.6,], aes(x = d, y = e, group = taus)) + 
+# plot the results 
+p1 <- ggplot(preds[preds$d < 0.6,], aes(x = d, y = e, group = taus)) + 
   geom_ribbon(aes(ymin = CI025, ymax = CI975, group = taus, fill = taus), alpha = 0.75) + 
-  geom_point(data = spat_data[spat_data$d < 0.6, ], inherit.aes = FALSE, aes(x = d, y = e)) + 
+  geom_point(data = spat_data[spat_data$d < 0.6, ], inherit.aes = FALSE, aes(x = d, y = e), alpha = 0.4) + 
   theme_classic() + 
   geom_line() + 
   xlab(bquote("Wood density g" ~cm^-3 )) +
   ylab("elevation (asl m)") + 
   scale_fill_manual(values = cols) + 
   theme(legend.position = "top")
+
+
+p1
+
+# Save the graph 
+ggsave(p1, file = './graphs/wden_triangle.png', 
+       width = 4, 
+       height = 4.2)
+
 
 
 

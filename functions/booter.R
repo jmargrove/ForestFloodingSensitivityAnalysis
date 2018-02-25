@@ -1,6 +1,6 @@
 #####################################################################################
-#' @title booty: a function for bootstrapping data
-#' @author James Margrove
+#'@title booty: a function for bootstrapping data
+#'@author James Margrove
 #'
 #'
 #'@param model model to be boot strapped 
