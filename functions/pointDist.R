@@ -8,6 +8,9 @@
 #' @param p1 coordinates of point 1
 #' @param p2 coordinates of point 2
 
-dist <- function(p1,p2){
-  sqrt(sum(((p1[1]-p2[1]))^2, ((p1[2]-p2[2])^2)))
+pointDist <- function(p1,p2){
+  xvals <- (p2[1]-p1[1])^2
+  yvals <- (p2[2]-p1[2])^2
+  sumVals = xvals+yvals
+  sqrt(sumVals)
 }
