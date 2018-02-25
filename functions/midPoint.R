@@ -12,5 +12,6 @@
 midPoint <- function(p1, p2) {
   newX <- (p1[1] + p2[1])/2
   newY <- (p1[2] + p2[2])/2
-  return(c(newX, newY))
+  res <- as.numeric(c(newX, newY))
+  return(res)
 }
