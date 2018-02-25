@@ -10,6 +10,7 @@
 
 
 sortToPoly <- function(coords){
+  source("./functions/dist.R")
   d <-  0
   for(i in 2:4){
     d[i] <- dist(coords[1,], coords[i,])
