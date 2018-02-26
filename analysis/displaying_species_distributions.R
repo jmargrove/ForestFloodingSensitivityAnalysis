@@ -24,6 +24,8 @@ CI <- apply(elevation_bootstrap, 1, quantile, c(0.025, 0.975))
 quantile(elevation_bootstrap[70,], c(0.025, 0.975))
 CI[,70]
 
+
+
 #write.table(CI, file = "elevation_CI.txt")
 elevation_CI <- read.table("./data/elevation_CI.txt", header = TRUE)
 
