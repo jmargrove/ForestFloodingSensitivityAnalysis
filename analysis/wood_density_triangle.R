@@ -32,13 +32,72 @@ d <- as.vector(unlist(with(spatial_data, tapply(dden, list(XCut, YCut), mean, na
 x <- as.vector(unlist(with(spatial_data, tapply(X50N, list(XCut, YCut), mean, na.rm = TRUE))))
 y <- as.vector(unlist(with(spatial_data, tapply(Y50N, list(XCut, YCut), mean, na.rm = TRUE))))
 
+
+
 spat_data <- data.frame(e, d, x, y)
 spat_data <- spat_data[!is.na(d),]
+
+o <- numeric()
+for(i in 1:length(spat_data$e)){
+  o[i] <- length(which(spat_data$e < spat_data$e[i]+5 & spat_data$e > spat_data$e[i]-5))
+}
+
+spat_data$o <- o
+ggplot(spat_data, aes(x = e, y = d, size = 1/o)) + geom_point()
+
+taus <- seq(0.025, 0.975, length = 5)
+
+mod <- rq(d ~ e, weight = 1/o, tau = taus, data = spat_data)
+mod
+summary(mod)
+
+str(mod)
+
+dt <- data.frame(taus = taus, coef = mod$coefficients[2,])
+
+ggplot(dt, aes(x = taus, y = (coef))) + geom_point() + geom_line() + 
+  geom_abline(intercept = 0, slope = 0, linetype = 2, color = "red") + 
+  theme_classic()
+
+
+quantile(spat_data$d, c(0.75))
+# accoring to this species > 0.5 wood density do not distribute themselves across elevation gradients
+# where as speceis below 0.5 are distributed across the elevatoin gradient?
+source("./functions/booter.R")
+ggplot(spat_data, aes(x = e, y = d, size = 1/o)) + geom_point()
+pred1 <- data.frame(e = seq(min(e, na.rm = T), max(e, na.rm = T), length = 100))
+prd <- expand.grid(e = seq(min(e, na.rm = T), max(e, na.rm = T), length = 100), taus = taus)
+prd$d <- as.vector(predict(mod, pred1))
+args(booter)
+CI <- booter(model = mod, data = spat_data, preds = pred1, quantReg = TRUE, n = 1000)
+prd$CI025 <- CI[1,]
+prd$CI975 <- CI[2,]
+
+
+# Colors for CI ribbon 
+cols <- c("#8CB369", "#F4E285", "#4C8577","#F4A259", "#BC4B51")
+
+p1 <- ggplot(spat_data, aes(x = e, y = d, size = 1/o)) + geom_point() + 
+  geom_ribbon(data = prd, inherit.aes = F, aes(x = e, ymin = CI025, ymax = CI975, group = taus, fill = factor(taus)), alpha = 0.75) + 
+  ylim(0.3, 0.65) + 
+  theme_classic() + 
+  geom_line(data = prd, inherit.aes = F, aes(x = e, y = d, group = taus)) + 
+  scale_fill_manual(values = cols) + 
+  ylab(bquote("Wood density g" ~cm^-3 )) +
+  xlab("elevation (asl m)") + 
+  scale_color_manual(values = cols) + 
+  theme(legend.position = "top")
+  
+p1
+
+
+
+head(prd)
 
 require(ade4)
 coords_dist <- dist(cbind(spat_data$x, spat_data$y))
 dden_dist <- dist(spat_data$d)
-mantel.rtest(coords_dist, dden_dist, nrepet = 9999)
+#mantel.rtest(coords_dist, dden_dist, nrepet = 9999)
 
 # Are wood density values auto-correlated?
 # Calculate Morans I
