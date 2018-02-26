@@ -31,6 +31,7 @@ e <- as.vector(unlist(with(spatial_data, tapply(elev, list(XCut, YCut), mean, na
 d <- as.vector(unlist(with(spatial_data, tapply(dden, list(XCut, YCut), mean, na.rm = TRUE))))
 x <- as.vector(unlist(with(spatial_data, tapply(X50N, list(XCut, YCut), mean, na.rm = TRUE))))
 y <- as.vector(unlist(with(spatial_data, tapply(Y50N, list(XCut, YCut), mean, na.rm = TRUE))))
+
 spat_data <- data.frame(e, d, x, y)
 spat_data <- spat_data[!is.na(d),]
 
