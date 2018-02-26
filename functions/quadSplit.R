@@ -5,22 +5,13 @@
 #' @description split a polygon into as many seperate polyons as specified 
 #' 
 #' @param coords four coordinates specifying the polygon 
+#' @param n number of splits or sqrt of new quadrats 
 #'
-#'
 
-
-rm(list=ls())
-
-source("./functions/sortToPoly.R")
-source("./functions/midPoint.R")
-require(ggplot2)
-data <- expand.grid(x = c(100, 300), y = c(250, 475))
-data[1:2, "x"] <- data[1:2,"x"] + 50
-data[2:4, "y"] <- data[2:4,"y"] + 400
-data <- sortToPoly(data)
-ggplot(data, aes(x = x, y = y)) + geom_polygon()
-
-quadSplit <- function(data, n) {
+quadSplit <- function(data, n, graph = FALSE) {
+  source("./functions/sortToPoly.R")
+  source("./functions/midPoint.R")
+  
   linearEq <- function(p1,p2, n){
     x = seq(min(as.numeric(c(p1[1],p2[1]))), max(as.numeric(c(p1[1],p2[1]))), length = n + 1 )
     beta <- as.numeric((p1[2]-p2[2])/(p1[1]-p2[1]))
@@ -36,8 +27,6 @@ quadSplit <- function(data, n) {
     }
     return(res)
   }
-  
-  
   
   # calculate the points 
   dt <- calcPoints(n = n)
@@ -71,16 +60,10 @@ quadSplit <- function(data, n) {
   
   plots$Q <- factor(rep(1:((dim(plots)[1])/4), each = 4))
 
+  if(graph){
+    ggplot2::ggplot(plots, aes(x = x, y = y, fill = Q)) + 
+    geom_polygon()  
+  }
+  
   return(plots)
 }
-
-
-
-
-
-
-plots <- quadSplit(data = data, n = 7)
-
-ggplot(data, aes(x = x, y = y)) + 
-  geom_polygon(data = plots, aes(x = x, y = y, fill = (Q)))
-
