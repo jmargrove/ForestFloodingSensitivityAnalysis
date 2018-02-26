@@ -79,6 +79,7 @@ qrSpatial <- function(data){
 # save the boot strap 
 #write.table(dist, file = "./data/boots_triangle_wden.txt")
 dist <- read.table("./data/boots_triangle_wden.txt", header = TRUE)
+
 ## how many were successsfully independent 
 mdist <- apply(dist, 1, mean)
 
@@ -112,6 +113,7 @@ ggsave(p1, file = './graphs/wden_triangle.png',
        height = 4.2)
 
 
+
 ribbon_data <- data.frame(d = seq(min(spat_data$d), max(spat_data$d), length = 100))
 
 ribbon_data$CI025 <- preds[preds$taus == "0.025",]$CI025
@@ -134,3 +136,4 @@ p2
 ggsave(p2, file = './graphs/wden_triangle_constant_envalope.png', 
        width = 4, 
        height = 4.2)
+
