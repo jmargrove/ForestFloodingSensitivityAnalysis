@@ -5,23 +5,15 @@
 #' @description split a polygon into as many seperate polyons as specified 
 #' 
 #' @param coords four coordinates specifying the polygon 
+                                  
+#' @param n number of splits or sqrt of new quadrats 
 #'
-#'
 
-
-rm(list=ls())
-
-data <- expand.grid(x = c(100, 300), y = c(250, 475))
-data[1:2, "x"] <- data[1:2,"x"] + 50
-data[2:4, "y"] <- data[2:4,"y"] + 400
-data <- sortToPoly(data)
-ggplot(data, aes(x = x, y = y)) + geom_polygon()
-
-source("./functions/sortToPoly.R")
-source("./functions/midPoint.R")
-
-quadSplit <- function(data, n) {
- n = 5
+quadSplit <- function(data, n, graph = FALSE) {
+  source("./functions/sortToPoly.R")
+  source("./functions/midPoint.R")
+  
+                    
   linearEq <- function(p1,p2, n){
     x = seq(min(as.numeric(c(p1[1],p2[1]))), max(as.numeric(c(p1[1],p2[1]))), length = n + 1 )
     beta <- as.numeric((p1[2]-p2[2])/(p1[1]-p2[1]))
@@ -38,8 +30,7 @@ quadSplit <- function(data, n) {
     return(res)
   }
   
-  
-  
+
   # calculate the points 
   dt <- calcPoints(n = n)
   
@@ -50,12 +41,7 @@ quadSplit <- function(data, n) {
   
   m <- as.matrix(preds)
   dm <- as.matrix(stats::dist(m))
-  
-  
-  ggplot(preds, aes(x = x, y = y)) + geom_point()
-  
-  
-  ###
+
   pointys <- function(n){
     dt <- calcPoints(n = n)
     preds <- data.frame(x = as.numeric(), y = as.numeric())
@@ -65,33 +51,26 @@ quadSplit <- function(data, n) {
     return(preds)
   }
     
-  preds <- pointys(5)
-  nums <- c(1,2,7,8)
+
+  preds <- pointys(n)
+  nums <- c(1,2,n+2,n+3)
   plots <- data.frame(x = numeric(), y = numeric())
-  s <- c(0:4, 6: 10, 12:16, 18:22, 24:30)
+  s <- c(0:n^3)[rep(c(rep(TRUE, n), FALSE), n)][1:(n^2)]
+  
+  
+
   for(i in s){
     plots <- rbind(plots, sortToPoly(preds[nums+i,]))  
   }
   
   plots$Q <- factor(rep(1:((dim(plots)[1])/4), each = 4))
-  
-  ggplot(preds, aes(x = x, y = y)) + 
-    #geom_point(data = predII, inherit.aes = F, aes(x = x, y = y), color = "red") + 
-    geom_point() + 
-    geom_polygon(data = plots, aes(x = x, y = y, fill = Q))
-  
+
+
+  if(graph){
+    ggplot2::ggplot(plots, aes(x = x, y = y, fill = Q)) + 
+    geom_polygon()  
+  }
   
   return(plots)
 }
-
-
-
-
-
-
-plots <- quadSplit(data = data, n = 5)
-dim(plots)
-
-ggplot(data, aes(x = x, y = y)) + 
-  geom_polygon(data = plots, aes(x = x, y = y, fill = (Q)))
 

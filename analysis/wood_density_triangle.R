@@ -31,6 +31,7 @@ e <- as.vector(unlist(with(spatial_data, tapply(elev, list(XCut, YCut), mean, na
 d <- as.vector(unlist(with(spatial_data, tapply(dden, list(XCut, YCut), mean, na.rm = TRUE))))
 x <- as.vector(unlist(with(spatial_data, tapply(X50N, list(XCut, YCut), mean, na.rm = TRUE))))
 y <- as.vector(unlist(with(spatial_data, tapply(Y50N, list(XCut, YCut), mean, na.rm = TRUE))))
+
 spat_data <- data.frame(e, d, x, y)
 spat_data <- spat_data[!is.na(d),]
 
@@ -73,10 +74,11 @@ qrSpatial <- function(data){
 }
 
 # Boot strap without the data
-dist <- foreach(i = 1:5000, .combine = cbind) %do% qrSpatial(data = spat_data)
+#dist <- foreach(i = 1:5000, .combine = cbind) %do% qrSpatial(data = spat_data)
 
 # save the boot strap 
-write.table(dist, file = "./data/boots_triangle_wden.txt")
+#write.table(dist, file = "./data/boots_triangle_wden.txt")
+dist <- read.table("./data/boots_triangle_wden.txt", header = TRUE)
 
 ## how many were successsfully independent 
 mdist <- apply(dist, 1, mean)
@@ -112,4 +114,26 @@ ggsave(p1, file = './graphs/wden_triangle.png',
 
 
 
+ribbon_data <- data.frame(d = seq(min(spat_data$d), max(spat_data$d), length = 100))
+
+ribbon_data$CI025 <- preds[preds$taus == "0.025",]$CI025
+ribbon_data$CI975 <- preds[preds$taus == "0.975",]$CI975
+
+
+p2 <- ggplot(preds[preds$d < 0.6,], aes(x = d, y = e, group = taus)) + 
+  geom_ribbon(data = ribbon_data[ribbon_data$d < 0.6,], inherit.aes = F, aes(x = d, ymin = CI025, ymax = CI975), fill = "blue",alpha = 0.2) + 
+  geom_point(data = spat_data[spat_data$d < 0.6, ], inherit.aes = FALSE, aes(x = d, y = e), alpha = 0.4) + 
+  theme_classic() + 
+  geom_line(aes(color = taus)) + 
+  xlab(bquote("Wood density g" ~cm^-3 )) +
+  ylab("elevation (asl m)") + 
+  scale_color_manual(values = cols) + 
+  theme(legend.position = "top")
+
+
+p2
+
+ggsave(p2, file = './graphs/wden_triangle_constant_envalope.png', 
+       width = 4, 
+       height = 4.2)
 
