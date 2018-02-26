@@ -11,11 +11,13 @@ require(grid)
 
 # Import data 
 sp_dist_pred <- read.table("./data/species_dist_predictions.txt", header = TRUE)
+elevation_bootstrap <- read.table("./data/elevation_bootstrap.txt", header = TRUE)
 spnames <- read.table("./data/species_names.txt", header = TRUE)
+
 pelev_data <- read.table("./data/pelev_data.txt", header = TRUE)
 spatial_data <- read.table("./data/forestplot_160_spatial_data.txt", header = TRUE)
 spdata <- droplevels(spatial_data[spatial_data$sp %in% levels(pelev_data$sp),])
-elevation_bootstrap <- read.table("./data/elevation_bootstrap.txt", header = TRUE)
+
 dim(elevation_bootstrap)
 elevation_bootstrap[1:10,1:10]
 CI <- apply(elevation_bootstrap, 1, quantile, c(0.025, 0.975))
