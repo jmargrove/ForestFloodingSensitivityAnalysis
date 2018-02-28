@@ -23,12 +23,12 @@ elev$Q <- as.numeric(substr(elev$plot, 3, 4))
 elev$plot <- substr(elev$plot, 1, 2)       
 elev
 # Species of interest
-spp <- c("Dryobalanopslanceolata", "Parashoreamalaanonan", "Parashoreatomentella", 
-         "Shorealeprosula", "Shoreamacroptera", "Shoreaparvifolia", 
-         "Shoreasmithiana",  "Shoreaseminis", "Shoreawaltonii",  
-         "Shoreamecistopteryx", "Shoreabeccariana",  "Shoreapauciflora", 
-         "Shoreaxanthophylla", "Shoreafalciferoides", "Shoreagibosa",
-         "Shoreaacumitisima")
+spp <- c("Dryobalanops_lanceolata", "Parashorea_malaanonan", "Parashorea_tomentella", 
+         "Shorea_leprosula", "Shorea_macroptera", "Shorea_parvifolia", 
+         "Shorea_smithiana",  "Shorea_seminis", "Shorea_waltonii",  
+         "Shorea_mecistopteryx", "Shorea_beccariana",  "Shorea_pauciflora", 
+         "Shorea_xanthophylla", "Shorea_falciferoides", "Shorea_gibosa",
+         "Shorea_acumitisima")
 spp <- spp[order(spp)]
 
 # Filter for species of interest above 50cm, and those with different lower limits
@@ -38,7 +38,8 @@ sbecDT <- data[data$Species == "Shoreabeccariana" & data$Diam2000 > 30 &
                  data$Diam2000 < 50,]
 smacDT <- data[data$Species == "Shoreamacroptera" & data$Diam2000 > 40 & 
                  data$Diam2000 < 50,]
-data <- data[data$Diam2000 > 50 & data$Species %in% spp,]
+#data <- data[data$Diam2000 > 50 & data$Species %in% spp,]
+data <- data[data$Diam2000 > 50,]
 data <- rbind(data, sxanDT, sbecDT, smacDT)
 head(data)
 # Add in the elevations of the 1 ha plots 
