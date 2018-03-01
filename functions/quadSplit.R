@@ -8,15 +8,36 @@
                                   
 #' @param n number of splits or sqrt of new quadrats 
 #'
+#'
+
+#plot_corners <- read.table("./data/Reuben_data/Copy of Sepilok 4ha plots final.txt", header = TRUE)
+
+#test_dt <- plot_corners[plot_corners$Plot == "A3", 5:6]
+
 
 quadSplit <- function(data, n, graph = FALSE) {
   source("./functions/sortToPoly.R")
   source("./functions/midPoint.R")
   
-                    
+  #data = test_dt
+  #n = 2
+    
   linearEq <- function(p1,p2, n){
+   # i = 3
+    #p1 <- dt[1:(n + 1),][i, ]
+    #p2 <- dt[(n + 2):(n + 2 + n),][i, ]
+    #n = 2
+    #####
+    
+    
+    
+    ####
     x = seq(min(as.numeric(c(p1[1],p2[1]))), max(as.numeric(c(p1[1],p2[1]))), length = n + 1 )
     beta <- as.numeric((p1[2]-p2[2])/(p1[1]-p2[1]))
+    if(is.infinite(beta)){
+      y = seq(to = as.numeric(p1[2]), from = as.numeric(p2[2]), length = n+1)
+      return(data.frame(x,y))
+    }
     alpha = as.numeric(p1[2] - beta*p1[1])
     y <- (beta*x) + alpha
     return(data.frame(x, y))
@@ -33,6 +54,10 @@ quadSplit <- function(data, n, graph = FALSE) {
 
   # calculate the points 
   dt <- calcPoints(n = n)
+  dt[6,2] <- dt[6,2] + 0.1
+  ggplot(dt, aes(x = x, y = y)) + geom_point()
+  i = 3
+  linearEq(dt[1:(n + 1),][i, ], dt[(n + 2):(n + 2 + n),][i, ], n = n)
   
   preds <- data.frame(x = as.numeric(), y = as.numeric())
   for(i in 1:(n+1)){
