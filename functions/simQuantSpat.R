@@ -67,17 +67,17 @@ plot(vario2, smooth = TRUE, ylim = c(0, 1.2))
 
 # Model using different spatial structures 
 spatModel1 <- nlme::gls(quantModelresid ~ 1, 
-                       data = data, 
-                       correlation = corExp(form = ~ x + y))
+                        data = data, 
+                        correlation = corExp(form = ~ x + y))
 spatModel2 <- nlme::gls(quantModelresid ~ 1, 
-                       data = data, 
-                       correlation = corGaus(form = ~ x + y))
+                        data = data, 
+                        correlation = corGaus(form = ~ x + y))
 spatModel3 <- nlme::gls(quantModelresid ~ 1, 
-                       data = data, 
-                       correlation = corSpher(form = ~ x + y))
+                        data = data, 
+                        correlation = corSpher(form = ~ x + y))
 spatModel4 <- nlme::gls(quantModelresid ~ 1, 
-                       data = data, 
-                       correlation = corLin(form = ~ x + y))
+                        data = data, 
+                        correlation = corLin(form = ~ x + y))
 
 AIC(spatModel1)
 AIC(spatModel2)
