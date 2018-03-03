@@ -14,15 +14,17 @@ source("./functions/booter.R")
 sp <- read.table("./data/riskratio_data.txt", header = TRUE)$sp[-c(4,7, 13)]
 data <- read.table( "./data/Reuben_data/data_cleaned.txt", header = TRUE)
 load("./models/pele_fsen_dden_Abundance")
-
+summary(model)
 # Predict elevation
 data$p <- predict(model, data, type = "response")
 data$sd <- predict(model, data, type = "response", se.fit = TRUE)$se.fit
 
+head(data)
+
 # organsie data in to a data.frame
-e <- as.vector(with(data, tapply(el, Species, median, na.rm = T)))
+e <- as.vector(with(data, tapply(elev, Species, mean, na.rm = T)))
 p <- as.vector(with(data, tapply(p, Species, mean)))
-a <- as.vector(with(data, tapply(p, Species, length)))
+a <- (as.vector(with(data, tapply(p, Species, length))))
 dt <- data.frame(e, p, a, sp)
 dt
 
@@ -35,10 +37,10 @@ preds <- data.frame(rr = as.vector(with(data, tapply(rr, Species, mean))), dden 
 model3 <- lm(e ~ p, weights = a, dt)
 summary(model3)
 
-# bootstrap the coef
-#booter(model3, data = dt, coef =  TRUE, n = 5000)
-
-
+# 95% coef
+coef <- summary(model3)$coefficients
+coef[2,2]*1.96*c(1,-1) + coef[2,1]
+coef[1,2]*1.96*c(1,-1) + coef[1,1]
 
 # Calculate the R^2 manually, for all individuals within the plots 
 indvPred <- predict(model, data, type = "response")
@@ -47,7 +49,6 @@ SSE_H0 <- sum(((data$el) - mean(data$el))^2)
 R2 <- (1 - SSE_H1/SSE_H0)
 R2 
 
-dim(data)
 # nudge text 
 dt$nudge_text <- rep(0.5, 13)
 dt$nudge_text[which(dt$sp == "Slep")] <- -1
@@ -62,7 +63,7 @@ j <- rep(c(130, 125, 130), 7)[1:13] + 5
 colnames(dt)[3] <- "Abundance"
 
 p2 <- ggplot(dt, aes(x = p, y = e)) + 
-  geom_violin(data = data, aes(x = round(p, 2), y = el, group = Species),  scale = "count", width = 15) +
+  geom_violin(data = data, aes(x = round(p, 2), y = elev, group = Species),  scale = "count", width = 15) +
   geom_point(aes(size = Abundance), alpha = 0.33) +
   geom_ribbon(data = preds, aes(ymin = e - CI, ymax = e + CI), alpha = 0.2) + 
   geom_line(data = preds, aes(y = e + CI, x = p), alpha = 0.2) + 
@@ -92,7 +93,7 @@ ggsave(p2, file = './graphs/Reuben_meanPlotElevation_Violin.png',
 
 p2 <- ggplot(dt, aes(x = p, y = e)) + 
   geom_vline(xintercept = p, alpha = 0.2, linetype = 2) +
-  geom_boxplot(data = data, aes(x = p, y = el, group = Species), width = 1) + 
+  geom_boxplot(data = data, aes(x = p, y = elev, group = Species), width = 1) + 
   geom_point(aes(size = Abundance), fill = "grey") +
   geom_ribbon(data = preds, aes(ymin = e - CI, ymax = e + CI), alpha = 0.2) + 
   geom_line(data = preds, aes(y = e + CI, x = p), alpha = 0.2) + 
