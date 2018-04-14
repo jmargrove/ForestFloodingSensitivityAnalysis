@@ -19,7 +19,7 @@
 <p align="center">
   <img src = "https://s3-eu-west-1.amazonaws.com/james.margrove/ForestFloodingReadMe/Webp.net-compress-image.jpg" width = "500px">
 </p>
-<p align="center" style="font-size:20px">
+<p align="center" style="font-size:8px">
   Figure 3 | Weighted regression inundation sensitivity (A) and wood density (B) against the adult elevation distribution  (m); relationship between the predicted distribution and actual distribution (C); and wood density distribution (D). Species were weighted based on their abundances with the size of the points corresponding to the abundance. Lines and 95% Confidence intervals were predicted from the model. Sixteen species were included in the analysis. Red dashed lines indicate the univariate analysis. Percentage variance for each variable from an ANOVA test. Using the mode calibrated in (A & B), for predictions of elevation and mean species elevation (C). Black points indicate the elevation a species and size reflects the abundance. Box plots show the distribution of the species. Species acronyms reflect the – dashed lines show the red dashed line indicates the 1:1 relationship. (D) quantile regression (0.025, 0.1, 0.5, 0.9, 0.975) typical wood density vs. typical elevation (m asl) of ¼ ha plots (n = 675). 
   </p>
 
