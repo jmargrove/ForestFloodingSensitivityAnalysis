@@ -16,8 +16,7 @@
 <h2>Abstract</h2>
 <p>Variation among tree species in their environmental tolerances can contribute to species coexistence through niche partitioning. Topographical distributions of tropical tree species have long been associated with local soil water requirements, but clear evidence for traits influencing these patterns is not forthcoming. Decreasing water availability at higher elevations appears to impose an upper barrier to many tree species distributions, but factors mediating lower elevational limits remain unresolved. We show that water inundation episodes constrain species distributions at lower elevational gradients in tropical forests. Estimates of species-specific seedling responses to water inundation accurately predicted adult tree distributions in a large forest dynamics plot. Water  inundation in low elevation areas increased seedling mortality of tree species with low wood densities, while having relatively little effect on species with higher wood densities. Our results suggest that the resistance of higher wood density species on low lying nutrient-rich alluvial forest to short periods of inundation allows high wood density species to occur on nutrient rich zones commonly associated with fast growing low wood density species. Analysis of adult distributions of 41 dipterocarp species in 178 ha of forest confirms that higher wood density species occur across the elevation gradient, while lower wood density species occur predominantly at lower elevations. Thus, differential seedling responses to water inundation captures larger scale filtering processes that determine adult topographical distributions of species. In view of this, increasingly variable rainfall amplitude in the region is likely to affect the spatial structure, species composition, and diversity of future forests.</p>
 
-<img src="https://s3-eu-west-1.amazonaws.com/james.margrove/ForestFloodingReadMe/Figure1.png" width="300" />
-
+<img src = "https://s3-eu-west-1.amazonaws.com/james.margrove/ForestFloodingReadMe/Webp.net-compress-image.jpg" width = "500px">
 
 <h2> Methods Summary</h2>
 <ul>
@@ -43,7 +42,7 @@ Community similarity map (Fig. 1c) used the same 12 elevation bands as above. No
 </ul>
 
 <h2> Key Results </h2>
-<img src = "https://s3-eu-west-1.amazonaws.com/james.margrove/ForestFloodingReadMe/Webp.net-compress-image.jpg" width = "500px">
+<img src = "https://s3-eu-west-1.amazonaws.com/james.margrove/ForestFloodingReadMe/Figure3.png" width = "500px">
 
 
 <h2>Build With</h2>
