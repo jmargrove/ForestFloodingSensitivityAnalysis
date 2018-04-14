@@ -43,7 +43,7 @@ Community similarity map (Fig. 1c) used the same 12 elevation bands as above. No
 </ul>
 
 <h2> Key Results </h2>
-<img src = "https://s3-eu-west-1.amazonaws.com/james.margrove/ForestFloodingReadMe/Figure3.png" width = "500px">
+<img src = "https://s3-eu-west-1.amazonaws.com/james.margrove/ForestFloodingReadMe/Webp.net-compress-image.jpg" width = "500px">
 
 
 <h2>Build With</h2>
