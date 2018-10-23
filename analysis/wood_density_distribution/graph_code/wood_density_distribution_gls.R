@@ -27,5 +27,8 @@ p1 <- ggplot(preds, aes(x = d, y = e)) +
   theme_bw() +
   geom_ribbon(aes(ymin = CI[1,], ymax = CI[2,]), alpha = 0.5)
 
-ggsave(p1, file = './analysis/wood_density_distribution/graph_code/graphs/wooddensity_VS_elevation_gls.png', width = 3, height = 3)
+ggsave(p1, 
+       file = './analysis/wood_density_distribution/graph_code/graphs/wooddensity_VS_elevation_gls.png', 
+       width = 3, 
+       height = 3)
 
