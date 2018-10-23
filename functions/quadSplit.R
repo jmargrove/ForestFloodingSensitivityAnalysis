@@ -21,17 +21,9 @@ quadSplit <- function(data, n, graph = FALSE) {
   
   #data = test_dt
   #n = 2
-    
+  data <- sortToPoly(data)
+  
   linearEq <- function(p1,p2, n){
-   # i = 3
-    #p1 <- dt[1:(n + 1),][i, ]
-    #p2 <- dt[(n + 2):(n + 2 + n),][i, ]
-    #n = 2
-    #####
-    
-    
-    
-    ####
     x = seq(min(as.numeric(c(p1[1],p2[1]))), max(as.numeric(c(p1[1],p2[1]))), length = n + 1 )
     beta <- as.numeric((p1[2]-p2[2])/(p1[1]-p2[1]))
     if(is.infinite(beta)){
@@ -76,20 +68,18 @@ quadSplit <- function(data, n, graph = FALSE) {
     return(preds)
   }
     
-
   preds <- pointys(n)
   nums <- c(1,2,n+2,n+3)
   plots <- data.frame(x = numeric(), y = numeric())
   s <- c(0:n^3)[rep(c(rep(TRUE, n), FALSE), n)][1:(n^2)]
   
-  
-
   for(i in s){
     plots <- rbind(plots, sortToPoly(preds[nums+i,]))  
   }
   
-  plots$Q <- factor(rep(1:((dim(plots)[1])/4), each = 4))
 
+  
+  plots$Q <- factor(rep(1:((dim(plots)[1])/4), each = 4))
 
   if(graph){
     ggplot2::ggplot(plots, aes(x = x, y = y, fill = Q)) + 
