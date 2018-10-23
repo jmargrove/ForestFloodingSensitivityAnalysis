@@ -20,7 +20,6 @@ spatial_data <- read.table("./data/forestplot_160_spatial_data.txt", header = TR
 plotExtent <- read.table("./data/plotExtent.txt", header = TRUE)
 # Reubens data (Sort out later )
 #reu_data <- read.table( "./data/Reuben_data/data_cleaned.txt", header = TRUE)
-648/3
 # Cut the data to ensure that 
 Xbreaks <- seq(plotExtent[1,"X50N"], plotExtent[3,"X50N"], length = 37)  
 Ybreaks <- seq(plotExtent[1,"Y50N"], plotExtent[2,"Y50N"], length = 19)  
@@ -195,14 +194,12 @@ taus = c(0.975)
 mod <- rq(e ~ d, data = spat_data, tau = taus)
 summary(mod)
 #simQuantSpat(quantModel = mod, coords = spat_data[,c(3,4)], coef = TRUE, nsim = 100)
-
-
 #preds <- data.frame(d = seq(min(spat_data[,"d"]), max(spat_data[,"d"]), length = 100))
 taus = c(0.025, 0.1, 0.5, 0.9, 0.975)
 preds <- data.frame(mcoef = as.numeric(),
                     CI025 = as.numeric(),
-                    CI975 = as.numeric(), 
-                    d = as.numeric(), 
+                    CI975 = as.numeric(),
+                    d = as.numeric(),
                     Q = as.numeric())
 for(t in taus){
   mod <- rq(e ~ d, data = spat_data, tau = t)
@@ -212,7 +209,7 @@ for(t in taus){
 }
 
 # Colors for CI ribbon 
-cols <- c("#8CB369", "#F4E285", "#4C8577","#F4A259", "#BC4B51")
+cols <- c("#8CB369", "#F4E285", "#4C8577", "#F4A259", "#BC4B51")
 # Ok basic done 
 p1 <- ggplot(spat_data[spat_data$d < 0.55,], aes(x = d, y = e)) + 
   geom_ribbon(data = preds[preds$d < 0.55,], 

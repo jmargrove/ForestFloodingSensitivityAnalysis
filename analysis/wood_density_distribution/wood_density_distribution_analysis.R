@@ -1,46 +1,31 @@
 # Q. does wood density have a positive correlation?
 
 #data 
-source("./analysis/wood_density_distribution/data_index.R")
+source("./analysis/wood_density_distribution/organisation.R")
 #packages
 source("./packages.R")
 # functions
 source("./analysis/wood_density_distribution/function_index.R")
 
+# graph of the data 
+ggplot(wood_density_data_178ha, aes(x = d, y = e)) + geom_point(aes(color = fd)) + 
+  stat_smooth(method = lm) + 
+  theme_bw()
+
+
 # step one. Simple linear model 
-model1 <- lm(d ~ e, data = wood_density_data_178ha)
-summary(model1)
-par(mfrow=c(2,2))
-plot(model1)
+model1 <- lm(e ~ d, data = wood_density_data_178ha)
+plot(model1, which= 1)
+save(model2, file = './analysis/wood_density_distribution/models/lm_models/model1.R')
 
-ggplot(wood_density_data_178ha, aes(x = e, y = d)) + geom_point(aes(color = fe)) + 
-  stat_smooth(method = lm) 
+# model2 modeling the unequal residuals.
+model2 <- gls(e ~ d, data = wood_density_data_178ha, 
+              weights = varIdent(form = ~1 | fd))
 
-# clearly as wood density increases so does the elevation, but the issue is that the residuals are
-# not equally varied. To fix, implement a gls, first take steps to control for spatial effect 
-
-model2 <- gls(d ~ e, data = wood_density_data_178ha)
-model3 <- gls(d ~ e, data = wood_density_data_178ha, correlation = corExp(form = ~x + y))
-model4 <- gls(d ~ e, data = wood_density_data_178ha, correlation = corGaus(form = ~x + y))
-
+summary(model2)
 plot(model2)
-plot(model3)
-plot(model4)
-
-# ok so modelling the spatial effect does help. But then...
-
-AIC(model2)
-AIC(model3)
-AIC(model4)
-
-# model 4 AIC is the lowest value 
-
-model4 <- gls(d ~ e, data = wood_density_data_178ha, 
-              weights = varIdent(form = ~1 | fe),
-              correlation = corGaus(form = ~x + y))
-
-summary(model4)
-plot(model4)
+save(model2, file = './analysis/wood_density_distribution/models/gls_models/model2.R')
 
 
-  
+
+
