@@ -1,6 +1,6 @@
 # organisation 
-source("./analysis/wood_density_distribution/data_index.R")
-
+# additional organisation file of the data
+source("./analysis/wood_density_distribution/data/data_index.R")
 # create a variable for the groupings of elevation patches 
 desired_number_observations <- round(dim(wood_density_data_178ha)[1] / 10, 0)
 wood_density_data_178ha$fd <- cut2(wood_density_data_178ha$d, m = desired_number_observations)

@@ -1,17 +1,17 @@
-# Q. does wood density have a positive correlation?
+#' @title  Wood_density_distribution with gls analysis 
+#' @author James Margrove
 
 #data 
 source("./analysis/wood_density_distribution/organisation.R")
 #packages
 source("./packages.R")
-# functions
+#functions
 source("./analysis/wood_density_distribution/function_index.R")
 
 # graph of the data 
 ggplot(wood_density_data_178ha, aes(x = d, y = e)) + geom_point(aes(color = fd)) + 
   stat_smooth(method = lm) + 
   theme_bw()
-
 
 # step one. Simple linear model 
 model1 <- lm(e ~ d, data = wood_density_data_178ha)
@@ -26,6 +26,9 @@ summary(model2)
 plot(model2)
 save(model2, file = './analysis/wood_density_distribution/models/gls_models/model2.R')
 
+# bootstrapping for the coef CI's
+booter(model2, data = wood_density_data_178ha, )
+?booter
 
 
 
