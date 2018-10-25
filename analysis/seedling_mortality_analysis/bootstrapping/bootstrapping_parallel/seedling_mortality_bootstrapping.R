@@ -1,11 +1,11 @@
 # bootstrapping code for 95% IC and the differances 
 rm(list = ls())
 # number of bootstraps 
-n = 8
+n = 32
 # route 
-route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
+#route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
 # route on shorea 
-#route <- paste(getwd(), "/", sep = "")
+route <- paste(getwd(), "/", sep = "")
 
 # packages specifically for the parallel processing of bootstrapped model
 require(doSNOW)
