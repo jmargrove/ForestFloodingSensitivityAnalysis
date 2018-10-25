@@ -14,7 +14,7 @@ require(lme4)
 # require(rbenchmark)
 
 # Import packages 
-source(paste(route, 'packages.R', sep = ""))
+# source(paste(route, 'packages.R', sep = ""))
 # Import model 
 load(paste(route, 'seedling_mortality_model.R', sep = ""))
 # import data
@@ -62,7 +62,7 @@ boots <- foreach(i = 1:n,
 #                                                                 model = r3, 
 #                                                                 preds = preds))
 #stop the cluster
-stopCluster(clust)
+stopCluster(cl)
 # calculate the confidence intervals
 CI <- (apply(boots, 1, quantile, c(0.025, 0.975)))
 
