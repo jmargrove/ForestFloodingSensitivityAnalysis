@@ -3,18 +3,12 @@ rm(list = ls())
 # number of bootstraps 
 n = 8
 # route 
-#route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
+route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
 # route on shorea 
-route <- paste(getwd(), "/", sep = "")
-
-# packages specifically for the parallel processing of bootstrapped model
-require(doParallel)
-require(foreach)
-require(lme4)
-# require(rbenchmark)
+#route <- paste(getwd(), "/", sep = "")
 
 # Import packages 
-# source(paste(route, 'packages.R', sep = ""))
+source(paste(route, 'packages.R', sep = ""))
 # Import model 
 load(paste(route, 'seedling_mortality_model.R', sep = ""))
 # import data
@@ -54,13 +48,6 @@ boots <- foreach(i = 1:n,
                  .combine = cbind) %dopar% booty(data = seedling_mortality_data,
                                                           model = r3,
                                                           preds = preds)
-
-# benchmark(foreach(i = 1:n, .combine = cbind) %dopar% booty(data = seedling_mortality_data, 
-#                                                                 model = r3, 
-#                                                                 preds = preds), 
-#                foreach(i = 1:n, .combine = cbind) %do% booty(data = seedling_mortality_data, 
-#                                                                 model = r3, 
-#                                                                 preds = preds))
 #stop the cluster
 stopCluster(cl)
 # calculate the confidence intervals
