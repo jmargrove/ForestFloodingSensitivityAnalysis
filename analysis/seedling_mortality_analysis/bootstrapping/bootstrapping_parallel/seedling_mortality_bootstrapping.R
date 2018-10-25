@@ -3,7 +3,7 @@ rm(list = ls())
 # number of bootstraps 
 n = 8
 # route 
-route <- './analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/'
+route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
 # Import packages 
 source(paste(route, 'packages.R', sep = ""))
 # Import model 
