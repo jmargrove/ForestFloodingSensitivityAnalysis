@@ -3,9 +3,9 @@ rm(list = ls())
 # number of bootstraps 
 n = 8
 # route 
-route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
+#route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
 # route on shorea 
-#route <- paste(getwd(), "/", sep = "")
+route <- paste(getwd(), "/", sep = "")
 
 # Import packages 
 source(paste(route, 'packages.R', sep = ""))
