@@ -1,18 +1,17 @@
 # bootstrapping code for 95% IC and the differances 
 rm(list = ls())
 # number of bootstraps 
-n = 32
+n = 8
 # route 
 #route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
 # route on shorea 
 route <- paste(getwd(), "/", sep = "")
 
 # packages specifically for the parallel processing of bootstrapped model
-require(doSNOW)
-require(snow)
-require(parallel)
+require(doParallel)
 require(foreach)
 require(lme4)
+# require(rbenchmark)
 
 # Import packages 
 source(paste(route, 'packages.R', sep = ""))
@@ -42,16 +41,26 @@ booty <- function(data, model, preds) {
 
 # how many cores are there
 number_of_cores <- detectCores()
-print(paste('how many cores ', number_of_cores, sep = ""))
-clust <- snow::makeCluster(number_of_cores, type = getClusterOption("type"))
-print(clust)
-# export the required data, function, packages, prediction frame
-clusterExport(clust, c("booty","data","preds", 'glmer'))
+print(paste('how many cores? ', number_of_cores, sep = ""))
+# make the cluster 
+cl <- makeCluster(number_of_cores)
+# register the cores
+registerDoParallel(cl)
 
 # run the parallel bootstrap 
-boots <- foreach(i = 1:n, .combine = cbind) %dopar% booty(data = seedling_mortality_data, 
-                                                          model = r3, 
+boots <- foreach(i = 1:n, 
+                 # .export=c('function1', 'function2'), 
+                 .packages='lme4', 
+                 .combine = cbind) %dopar% booty(data = seedling_mortality_data,
+                                                          model = r3,
                                                           preds = preds)
+
+# benchmark(foreach(i = 1:n, .combine = cbind) %dopar% booty(data = seedling_mortality_data, 
+#                                                                 model = r3, 
+#                                                                 preds = preds), 
+#                foreach(i = 1:n, .combine = cbind) %do% booty(data = seedling_mortality_data, 
+#                                                                 model = r3, 
+#                                                                 preds = preds))
 #stop the cluster
 stopCluster(clust)
 # calculate the confidence intervals
