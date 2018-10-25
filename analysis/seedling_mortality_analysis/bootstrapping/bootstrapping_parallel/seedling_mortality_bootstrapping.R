@@ -4,6 +4,16 @@ rm(list = ls())
 n = 8
 # route 
 route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
+# route on shorea 
+#route <- paste(getwd(), "/", sep = "")
+
+# packages specifically for the parallel processing of bootstrapped model
+require(doSNOW)
+require(snow)
+require(parallel)
+require(foreach)
+require(lme4)
+
 # Import packages 
 source(paste(route, 'packages.R', sep = ""))
 # Import model 
@@ -33,8 +43,8 @@ booty <- function(data, model, preds) {
 # how many cores are there
 number_of_cores <- detectCores()
 print(paste('how many cores ', number_of_cores, sep = ""))
-clust <- snow::makeCluster(number_of_cores, type = 'SOCK')
-
+clust <- snow::makeCluster(number_of_cores, type = getClusterOption("type"))
+print(clust)
 # export the required data, function, packages, prediction frame
 clusterExport(clust, c("booty","data","preds", 'glmer'))
 
