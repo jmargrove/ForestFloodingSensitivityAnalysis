@@ -1,8 +1,9 @@
 # adult distribution INLA SPDE analysis
 rm(list = ls())
-route <- paste(getwd(), "/", sep = "")
+path <- '/home/majames/Documents/ForestFloodingSensitivityAnalysis/adult_distribution_analysis/'
+#pathe <- './'
 
-source(paste(route, '../data/data_index.R', sep = ""))
+source(paste(path, 'data/data_index.R', sep = ""))
 str(species_occurance_data)
 
 # plot(mesh_samples_for_testing[["setup1"]]$mesh)
@@ -11,7 +12,7 @@ str(species_occurance_data)
 require(INLA)
 coords <- with(species_occurance_data, cbind(X, Y))
 
-source(paste(route, 'testing_meshes.R', sep = ""))
+source(paste(path, 'analysis/testing_meshes.R', sep = ""))
 
 diff_setups <- names(mesh_samples_for_testing)
 
@@ -56,6 +57,6 @@ for(setup in diff_setups){
                  family = "binomial", 
                  num.threads = number_of_cores)
   # summary 
-  save(model1, file = paste(route, '../results/', setup, '.R'), sep = "")
+  save(model1, file = paste(path, 'results/', setup, '.R'), sep = "")
   
 }
