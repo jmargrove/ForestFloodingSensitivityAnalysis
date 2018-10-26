@@ -2,7 +2,7 @@
 rm(list = ls())
 print(paste('working dir:::', getwd()))
 path <- '/home/majames/Documents/ForestFloodingSensitivityAnalysis/analysis/adult_distribution_analysis/'
-#path <- paste(getwd(), '/analysis/adult_distribution_analysis/', sep = "")
+path <- paste(getwd(), '/analysis/adult_distribution_analysis/', sep = "")
 
 source(paste(path, 'data/data_index.R', sep = ""))
 str(species_occurance_data)
@@ -17,6 +17,8 @@ source(paste(path, 'analysis/testing_meshes.R', sep = ""))
 
 diff_setups <- names(mesh_samples_for_testing)
 
+plot(mesh_samples_for_testing[[1]]$mesh)
+points(coords)
 
 # priors 
 for(setup in diff_setups){
@@ -40,15 +42,15 @@ for(setup in diff_setups){
                                               elev = species_occurance_data$elev,
                                               species = species_occurance_data$species)))
   # formula 
-  formula <- occurance ~ 0 + int + species * elev + I(elev^2) + f(i, model = spde)
+  formula <- occurance ~ 0 + int #+ species * elev + I(elev^2) + f(i, model = spde)
   
   # setting up the core 
   require(doParallel)
   # how many cores are there
-  number_of_cores <- detectCores()
+  number_of_cores <- 4# detectCores()
   print(paste('how many cores? ', number_of_cores, sep = ""))
   # make the cluster 
-  cl <- makeCluster(number_of_cores)
+  cl <- makeCluster()
   # register the cores
   registerDoParallel(cl)
   
@@ -59,8 +61,8 @@ for(setup in diff_setups){
                  control.fixed = list(expand.factor.strategy = "inla"), 
                  family = "binomial", 
                  num.threads = number_of_cores, 
-                 control.compute=list(cpo=TRUE))
-  
+                 control.compute=list(cpo=FALSE))
+  summary(model)
   # summary 
   save(model, file = paste(path, 'results/', setup, '.R', sep = ""))
 }
