@@ -21,6 +21,7 @@ preds <- with(seedling_mortality_data, expand.grid(dia = mean(dia, na.rm = T),
                                                   f.time = '3', 
                                                   sp = levels(seedling_mortality_data$sp),
                                                   flood = levels(seedling_mortality_data$flood)))
+
 # booty function for bootstrapping glmer 
 booty <- function(data, model, preds) {
   random_row_numbers <- sample(1:dim(data)[1], replace = TRUE)

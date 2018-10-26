@@ -2,7 +2,7 @@
 rm(list = ls())
 print(paste('working dir:::', getwd()))
 path <- '/home/majames/Documents/ForestFloodingSensitivityAnalysis/analysis/adult_distribution_analysis/'
-#pathe <- './'
+#path <- paste(getwd(), '/analysis/adult_distribution_analysis/', sep = "")
 
 source(paste(path, 'data/data_index.R', sep = ""))
 str(species_occurance_data)
@@ -20,6 +20,8 @@ diff_setups <- names(mesh_samples_for_testing)
 
 # priors 
 for(setup in diff_setups){
+  print(paste('Which iteration of the loop? ', setup, sep = ""))
+ # setup <- diff_setups[1]
   rho0 <- mesh_samples_for_testing[[setup]]$priors$rho0
   sig0 <- mesh_samples_for_testing[[setup]]$priors$sig0
   # spde
@@ -51,13 +53,14 @@ for(setup in diff_setups){
   registerDoParallel(cl)
   
   # inla model 
-  model1 <- inla(formula, 
+  model <- inla(formula, 
                  data = inla.stack.data(stk),
                  control.predictor = list(A = inla.stack.A(stk)),
                  control.fixed = list(expand.factor.strategy = "inla"), 
                  family = "binomial", 
-                 num.threads = number_of_cores)
-  # summary 
-  save(model1, file = paste(path, 'results/', setup, '.R'), sep = "")
+                 num.threads = number_of_cores, 
+                 control.compute=list(cpo=TRUE))
   
+  # summary 
+  save(model, file = paste(path, 'results/', setup, '.R', sep = ""))
 }
