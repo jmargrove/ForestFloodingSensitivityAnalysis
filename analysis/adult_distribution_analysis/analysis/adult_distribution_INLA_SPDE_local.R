@@ -13,11 +13,10 @@ plot(mesh)
 points(coords, col = 'red', pch = 21, cex = 0.1)
 
 # priors 
-rho0 <- 100
+rho0 <- 20
 sig0 <- 0.3
 
 
-?inla.spde2.pcmatern
 # spde
 spde <- inla.spde2.pcmatern(mesh, 
                             alpha = 2,
@@ -37,7 +36,7 @@ stk <- inla.stack(tag = "stk",
                                           species = species_occurance_data$species)))
 
 # formula 
-formula <- occurance ~ 0 + species * elev + I(elev^2) + f(i, model = spde)
+formula <- occurance ~ 0 + int + species * elev + I(elev^2) + f(i, model = spde)
 
 # inla model 
 model1 <- inla(formula, 
@@ -45,8 +44,7 @@ model1 <- inla(formula,
                control.predictor = list(A = inla.stack.A(stk)),
                control.fixed = list(expand.factor.strategy = "inla"), 
                family = "binomial", 
-               inla.call = "remote", 
-               num.threads = 8)
+               num.threads = 4)
 
 # summary 
 summary(model1)
