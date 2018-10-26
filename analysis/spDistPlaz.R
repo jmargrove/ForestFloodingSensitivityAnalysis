@@ -1,0 +1,58 @@
+## OK so robis Ideas. 
+
+spdist_rain <- read.table("./data/spdist_rainfall.txt", header = T)
+rr_data <- read.table("./data/riskratio_data.txt", header = T)
+pele_data <- read.table("./data/pelev_data.txt", header = T)
+dden_data <- read.table("./data/dden_adult_new.txt", header = T)
+drought_data <- read.table("./data/resistance_drought.txt", header = TRUE)
+str(drought_data)
+
+data <- merge(spdist_rain, rr_data, by = "sp")
+data <- merge(pele_data, data, by = "sp")
+data <- merge(dden_data, data, by = "sp")
+
+require(ggplot2)
+ggplot(data, aes(x = count, y = rr)) + geom_point()
+ggplot(data, aes(x = mean, y = rr)) + geom_point()
+ggplot(data, aes(x = median, y = rr)) + geom_point()
+ggplot(data, aes(x = stdev, y = rr)) + geom_point()
+ggplot(data, aes(x = range, y = rr)) + geom_point()
+ggplot(data, aes(x = majority, y = rr)) + geom_point()
+ggplot(data, aes(x = variety, y = rr)) + geom_point()
+
+ggplot(data, aes(x = count, y = dden_adult)) + geom_point()
+ggplot(data, aes(x = mean, y = dden)) + geom_point()
+ggplot(data, aes(x = median, y = dden)) + geom_point()
+ggplot(data, aes(x = stdev, y = dden)) + geom_point()
+ggplot(data, aes(x = range, y = dden)) + geom_point()
+ggplot(data, aes(x = majority, y = dden)) + geom_point()
+ggplot(data, aes(x = variety, y = dden_adult)) + geom_point()
+
+summary(lm(count ~ dden_adult * rr, data))
+summary(lm(stdev ~ dden_adult * rr, data))
+summary(lm(mean ~ dden_adult * rr, data))
+summary(lm(range ~ dden_adult * rr, data))
+summary(lm(majority ~ dden_adult * rr, data))
+
+ggplot(data, aes(x = count, y = pe)) + geom_point()
+ggplot(data, aes(x = mean, y = pe)) + geom_point()
+ggplot(data, aes(x = median, y = pe)) + geom_point()
+ggplot(data, aes(x = stdev, y = pe)) + geom_point()
+ggplot(data, aes(x = range, y = pe)) + geom_point()
+ggplot(data, aes(x = majority, y = pe)) + geom_point()
+ggplot(data, aes(x = variety, y = pe)) + geom_point()
+
+data <- merge(drought_data, data, by = "sp")
+
+ggplot(data, aes(x = count, y = resistance)) + geom_point()
+ggplot(data, aes(x = mean, y = resistance)) + geom_point()
+ggplot(data, aes(x = median, y = resistance)) + geom_point()
+ggplot(data, aes(x = stdev, y = resistance)) + geom_point()
+ggplot(data, aes(x = range, y = resistance)) + geom_point()
+ggplot(data, aes(x = majority, y = resistance)) + geom_point()
+ggplot(data, aes(x = variety, y = resistance)) + geom_point()
+
+model <- (lm(variety ~ rr + resistance, data))
+summary(model)
+anova(model)
+car::Anova(model)

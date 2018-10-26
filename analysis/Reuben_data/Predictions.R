@@ -5,7 +5,7 @@
 # Clear work space 
 
 rm(list=ls())
-
+Sys.setenv(LANG = "en")
 # Import packages 
 require(ggplot2)
 sp <- read.table("./data/riskratio_data.txt", header = TRUE)$sp[-c(4,7, 13)]
@@ -24,13 +24,14 @@ data <- cbind(data, predict(model, data, type = "response", interval = "predicti
 head(data)
 
 
-model2 <- lm( el ~ p, data = data)
+model2 <- lm( elev ~ p, data = data)
 summary(model2)
 
 #### plot the model 
 preds <- data.frame(p = seq(min(data$p), max(data$p), length = 100))
 preds$el <- predict(model2, preds, type = "response")
 preds$CI <- predict(model2, preds, type = "response", se.fit = TRUE)$se.fit * 1.96
+head(preds)
 
 # To jitter names
 j <- rep(c(140, 135, 130), 7)[1:13]
@@ -52,7 +53,7 @@ ggsave(p1, file = './graphs/Reuben_EachIndividualElevation.png',
 
 
 # 
-e <- with(data, tapply(el, Species, mean))
+e <- with(data, tapply(elev, Species, mean))
 p <- with(data, tapply(p, Species, mean))
 a <- with(data, tapply(p, Species, length))
 d <- with(data, tapply(dden, Species, mean))
@@ -73,12 +74,15 @@ p.value
 preds <- data.frame(p = seq(min(p),max(p), length = 100))
 preds$e <- predict(model3, preds, type = "response")
 preds$CI <- predict(model3, preds, type = "response", se.fit = TRUE)$se.fit * 1.96
+head(preds)
 
 dt <- data.frame(e, p, a, sp)
 dt$nudge_text <- rep(0.5, 13)
 dt$nudge_text[which(dt$sp == "Slep")] <- -1
 dt$nudge_text[which(dt$sp == "Spar")] <- -1
-p2 <- ggplot(dt, aes(x = p, y = e)) + 
+head(dt)
+
+p2 <- ggplot(dt, aes(x = p, y = e)) + geom_line() 
               geom_violin(data = data, aes(x = round(p, 2), y = el, group = data$Species),  scale = "count", width = 10) +
               geom_point(aes(size = a, alpha = 0.33)) +
               geom_ribbon(data = preds, aes(ymin = e - CI, ymax = e + CI), alpha = 0.2) + 
@@ -153,7 +157,6 @@ p3
 ggsave(p3, file = './graphs/Reuben_mean1haPlotElevation.png', 
        width = 4, 
        height = 4)
-
 
 p1
 p2

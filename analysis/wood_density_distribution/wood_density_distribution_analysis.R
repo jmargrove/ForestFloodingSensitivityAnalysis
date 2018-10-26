@@ -27,8 +27,11 @@ plot(model2)
 save(model2, file = './analysis/wood_density_distribution/models/gls_models/model2.R')
 
 # bootstrapping for the coef CI's
-booter(model2, data = wood_density_data_178ha, )
-?booter
 
+#coef_CI <- booter(model2, data = wood_density_data_178ha, coef = TRUE, n = 5000)
+#save(coef_CI, file = './analysis/wood_density_distribution/bootstrapped/coef_CI_gls_wooddensity_VS_elevation.R')
+
+load('./analysis/wood_density_distribution/bootstrapped/coef_CI_gls_wooddensity_VS_elevation.R')
+coef_CI
 
 

@@ -2,7 +2,7 @@ sp	fullname	species	genus	Cap
 Acos	Anisoptera_costata	costata	Anisoptera	A.
 Dacu	Dipterocarpus_acutangulus	acutangulus	Dipterocarpus	D.
 Dapp	Dipterocarpus_applanatus	applanatus	Dipterocarpus	D.
-Dcau	Dipterocarpus_caudiferus_	caudiferus	Dipterocarpus	D.
+Dcau	Dipterocarpus_caudiferus	caudiferus	Dipterocarpus	D.
 Dcon	Dipterocarpus_confertus	confertus	Dipterocarpus	D.
 Dgra	Dipterocarpus_grandiflorus	grandiflorus	Dipterocarpus	D.
 Dhum	Dipterocarpus_humeratus	humeratus	Dipterocarpus	D.
@@ -11,7 +11,7 @@ Dkun	Dipterocarpus_kunstleri	kunstleri	Dipterocarpus	D.
 Dry	Dryobalanops_lanceolata	lanceolata	Dryobalanops	D.
 Hbec	Hopea_beccariana	beccariana	Hopea	H.
 Hner	Hopea_nervosa	nervosa	Hopea	H.
-Hsan	Hopea_sangal_	sangal	Hopea	H.
+Hsan	Hopea_sangal	sangal	Hopea	H.
 Hsem	Hopea_semicuneata	semicuneata	Hopea	H.
 Pmal	Parashorea_malaanonan	malaanonan	Parashorea	P.
 Ptom	Parashorea_tomentella	tomentella	Parashorea	P.

@@ -114,12 +114,7 @@ r3 <- glmer(mortality ~ log(dia) + ztopo +  f.time + flood + sp + sp:flood + (f.
 summary(r3)
 save(r3, file = './analysis/seedling_mortality_analysis/models/seedling_mortality_model.R')
 
-dAIC(rm_flood_species_int, r3)
-
+# testing the effect of inundation interaction with species 
 rm_flood_species_int <- update(r3, . ~ . -sp:flood)
 anova(rm_flood_species_int, r3)
 
-load("./models/Model.RData")
-
-s3
-dAIC(s3, r3)

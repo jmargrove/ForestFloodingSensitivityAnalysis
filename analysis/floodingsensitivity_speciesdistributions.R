@@ -25,7 +25,7 @@ dden_data <- dden_data[order(dden_data$sp), ]
 riskratio_data$dden <- dden_data$dden_adult
 
 # Model data with a weighted linear model 
-model <- lm(pe ~ rr + dden, data = riskratio_data)
+model <- lm(pe ~ rr + dden, weights = Abundance, data = riskratio_data)
 summary(model)
 av1 <- anova(model)
 av1
@@ -74,11 +74,12 @@ p1 <- ggplot(preds, aes(x = rr, y = p)) +
   geom_line(aes(x = rr, y = p+CI * 1.96), linetype = 2, alpha = 0.1) + 
   geom_point(data = riskratio_data, aes(x = rr, y = pe, size = Abundance), alpha = 0.3) + 
   geom_line() + 
-  ylab("p(elevation) m asl") + 
+  ylab("E(elevation) m asl") + 
   xlab("Water inundation sensitivity") +
   theme_classic() +
+  ylim(44, 127) + 
   theme(legend.position = "none") +
-  geom_text(aes(x = 0.12, y = 110, 
+  geom_text(aes(x = 0.12, y = 120, 
                 label = paste("ANOVA: ", round(aov_percent[1], 1), "%", sep = "")), size = 3) +
   geom_abline(intercept = coef(uniMod_rr)[1], slope = coef(uniMod_rr)[2], linetype = 2, color = "#BC4B51")
 
@@ -88,6 +89,8 @@ p1
 ggsave(p1, file = './graphs/pelevation_fsen_Abundance.png', 
        width = 4, 
        height = 4)
+
+
 
 ################################################################################
 # bootstrap the data 
@@ -113,6 +116,7 @@ p2 <- ggplot(preds, aes(x = dden, y = p)) +
   xlab(bquote("Wood density g" ~cm^-3 )) +
   theme_classic() + theme(legend.position = "none") + 
   theme(legend.position = "none") +
+  ylim(44, 127) + 
   geom_text(aes(x = 0.4, y = 120, 
                 label = paste("ANOVA: ", round(aov_percent[2], 1), "%", sep = "")), size = 3) +
   geom_abline(intercept =  coef(uniMod_dd)[1], slope = coef(uniMod_dd)[2], linetype = 2, color = "#BC4B51")

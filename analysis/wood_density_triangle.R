@@ -5,15 +5,11 @@ Sys.setenv(LANG = "en")
 rm(list=ls())
 
 # Import packages 
-require(ggplot2)
-require(gtable)
-require(grid)
-require(quantreg)
-require(ape)
-require(McSpatial)
+source("./packages.R")
 # Import data 
 pelev_data <- read.table("./data/pelev_data.txt", header = TRUE)
-spatial_data <- read.table("./data/forestplot_160_spatial_data_UPDATE.txt", header = TRUE)
+spatial_data <- read.table("./data/forestplot_160_spatial_data_UPDATE.txt", 
+  header = TRUE)
 plotExtent <- read.table("./data/plotExtent.txt", header = TRUE)
 reu_data <- read.table("./data/reu_160plot_combinded_data.txt", header = TRUE)
 
@@ -25,7 +21,10 @@ spatial_data$XCut <- cut(spatial_data$X50N, breaks = Xbreaks)
 spatial_data$YCut <- cut(spatial_data$Y50N, breaks = Ybreaks)
 
 # Calculate average, elevation and wood density per square 
-e <- as.vector(unlist(with(spatial_data, tapply(elev, list(XCut, YCut), mean, na.rm = TRUE))))
+e <- as.vector(unlist(with(spatial_data, 
+  tapply(elev, list(XCut, YCut), 
+  mean,
+  na.rm = TRUE))))
 d <- as.vector(unlist(with(spatial_data, tapply(dden, list(XCut, YCut), mean, na.rm = TRUE))))
 x <- as.vector(unlist(with(spatial_data, tapply(X50N, list(XCut, YCut), mean, na.rm = TRUE))))
 y <- as.vector(unlist(with(spatial_data, tapply(Y50N, list(XCut, YCut), mean, na.rm = TRUE))))
