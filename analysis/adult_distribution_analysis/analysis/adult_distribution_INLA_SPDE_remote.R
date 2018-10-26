@@ -2,7 +2,7 @@
 rm(list = ls())
 route <- paste(getwd(), "/", sep = "")
 
-source(paste(route, 'data_index.R', sep = ""))
+source(paste(route, '../data/data_index.R', sep = ""))
 str(species_occurance_data)
 
 # plot(mesh_samples_for_testing[["setup1"]]$mesh)
