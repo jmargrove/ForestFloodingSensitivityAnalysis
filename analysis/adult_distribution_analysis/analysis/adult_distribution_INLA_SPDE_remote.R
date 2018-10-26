@@ -2,7 +2,7 @@
 rm(list = ls())
 print(paste('working dir:::', getwd()))
 path <- '/home/majames/Documents/ForestFloodingSensitivityAnalysis/analysis/adult_distribution_analysis/'
-path <- paste(getwd(), '/analysis/adult_distribution_analysis/', sep = "")
+#path <- paste(getwd(), '/analysis/adult_distribution_analysis/', sep = "")
 
 source(paste(path, 'data/data_index.R', sep = ""))
 str(species_occurance_data)
