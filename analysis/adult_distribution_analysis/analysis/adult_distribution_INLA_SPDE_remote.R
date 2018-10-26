@@ -50,7 +50,7 @@ for(setup in diff_setups){
   number_of_cores <- 4# detectCores()
   print(paste('how many cores? ', number_of_cores, sep = ""))
   # make the cluster 
-  cl <- makeCluster()
+  cl <- makeCluster(number_of_cores)
   # register the cores
   registerDoParallel(cl)
   
