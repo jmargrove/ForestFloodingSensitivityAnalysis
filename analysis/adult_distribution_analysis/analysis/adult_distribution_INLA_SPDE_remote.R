@@ -1,6 +1,6 @@
 # adult distribution INLA SPDE analysis
 rm(list = ls())
-print('working dir:::', getwd())
+print(paste('working dir:::', getwd()))
 path <- '/home/majames/Documents/ForestFloodingSensitivityAnalysis/adult_distribution_analysis/'
 #pathe <- './'
 
