@@ -2,9 +2,9 @@
 require(INLA)
 mesh_samples_for_testing <- list(
   setup1 = list(mesh = inla.mesh.2d(coords, 
-                                    cutoff = 100, 
-                                    max.edge = c(900, 800), 
-                                    offset=c(500,1000)), 
+                                    cutoff = 300, 
+                                    max.edge = c(500, 500), 
+                                    offset=c(300,300)), 
                 priors = list(
                   rho0 = 100,
                   sig0 = 0.3
@@ -14,7 +14,7 @@ mesh_samples_for_testing <- list(
                                     cutoff = 50, 
                                     offset=c(500,1000)), 
                 priors = list(
-                  rho0 = 100,
+                  rho0 = 50,
                   sig0 = 0.3
                 )),
   setup3 = list(mesh = inla.mesh.2d(coords, 
