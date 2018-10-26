@@ -16,7 +16,7 @@ preds$CI975 <- preds$occurance + predict(model1, preds, type = 'response', se.fi
 require(ggplot2)
 # graph of the prediced values...
 ggplot(preds, aes(x = elev, y = occurance, color = species)) + 
-  geom_ribbon(aes(ymin = CI025, ymax = CI975), alpha = 0.5, linetype = 0) +
+  geom_ribbon(aes(ymin = CI025, ymax = CI975), alpha = 0.25, linetype = 0) +
   facet_wrap(~species, scales = 'free_y') + 
   geom_line() + 
   theme_bw()
