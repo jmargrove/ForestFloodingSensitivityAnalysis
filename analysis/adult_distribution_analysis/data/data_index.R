@@ -1,2 +1,3 @@
 #data index 
-species_occurance_data <- read.table('./analysis/adult_distribution_analysis/data/species_occurance_data.txt', header = TRUE)
+route <- paste(getwd(), "/", sep = "")
+species_occurance_data <- read.table(source(paste(route, '../data/species_occurance_data.txt', sep = "")), header = TRUE)
