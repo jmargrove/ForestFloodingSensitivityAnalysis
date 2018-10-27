@@ -5,15 +5,15 @@ str(species_occurance_data)
 
 require(INLA)
 coords <- with(species_occurance_data, cbind(X, Y))
-mesh <- inla.mesh.2d(coords, max.edge = c(100, 250), 
-                                  cutoff = 20, 
-                                  offset=c(400,800))
+mesh <- inla.mesh.2d(coords, max.edge = c(300, 500), 
+                                  cutoff = 100, 
+                                  offset=c(200,400))
 
 plot(mesh)
 points(coords, col = 'red', pch = 21, cex = 0.1)
 
 # priors 
-rho0 <- 20
+rho0 <- 100
 sig0 <- 0.3
 
 
@@ -44,6 +44,7 @@ model1 <- inla(formula,
                control.predictor = list(A = inla.stack.A(stk)),
                control.fixed = list(expand.factor.strategy = "inla"), 
                family = "binomial", 
+               inla.call = "remote",
                num.threads = 4)
 
 # summary 

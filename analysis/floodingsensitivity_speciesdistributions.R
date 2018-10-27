@@ -25,7 +25,7 @@ dden_data <- dden_data[order(dden_data$sp), ]
 riskratio_data$dden <- dden_data$dden_adult
 
 # Model data with a weighted linear model 
-model <- lm(pe ~ rr + dden, weights = Abundance, data = riskratio_data)
+model <- lm(pe ~ rr + dden, data = riskratio_data)
 summary(model)
 av1 <- anova(model)
 av1
