@@ -29,7 +29,7 @@ rr_explaied_variation <- paste('Anova:', round(var_res / sum(var_res) * 100, 1)[
 
 # plotting the data 
 p1 <- ggplot(preds_riskratio, aes(x = diff_mort, y = elev)) + 
-  geom_line(data = partial_lines_data, aes(x = x, y = y, group = factor(x))) + 
+  geom_line(data = partial_lines_data, aes(x = x, y = y, group = factor(x)), alpha = 0.3) + 
   geom_line() + 
   geom_point(data = riskratio, aes(y = elev, x = diff_mort), alpha = 0.5, color = 'red') + 
   geom_ribbon(aes(ymin = CI025, ymax = CI975), alpha = 0.2) + 
@@ -38,7 +38,10 @@ p1 <- ggplot(preds_riskratio, aes(x = diff_mort, y = elev)) +
   geom_text(aes(x = 0.1, y = 125, label = rr_explaied_variation)) + 
   ylab('E(elevation) m asl') + 
   xlab('Water inundation sensitivity') + 
-  ylim(25, 125)
+  ylim(25, 125) + 
+  stat_smooth(data = riskratio, aes(x = diff_mort, y = elev), 
+              se = F, method = 'lm', color = 'red', 
+              linetype = 2, size = 0.25)
 
 p1
 
