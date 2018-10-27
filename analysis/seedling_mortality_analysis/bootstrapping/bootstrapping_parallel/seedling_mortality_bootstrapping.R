@@ -1,7 +1,7 @@
 # bootstrapping code for 95% IC and the differances 
 rm(list = ls())
 # number of bootstraps 
-n = 5
+n = 5000 
 # route 
 route <- paste(getwd(), "/", sep = "")
 #route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
