@@ -27,8 +27,8 @@ levels(preds$`Water inundation`) <- c("Dry", "Wet")
 p1 <- ggplot(preds, aes(x =  reorder(sp, pe), y = mortality, group = `Water inundation`)) + 
   geom_errorbar(aes(ymin = CI025, ymax=CI975), width = 0.3, alpha = 0.2) + 
   theme_classic() + 
-  geom_point(size = 4) + 
-  geom_point(size = 3, aes(color = `Water inundation`)) + 
+  # geom_point(size = 4) + 
+  # geom_point(size = 3, aes(color = `Water inundation`)) + 
   theme(legend.position = c(0.25, 0.8)) + 
   xlab("Species") + 
   ylab("p(Mortality)") + 
