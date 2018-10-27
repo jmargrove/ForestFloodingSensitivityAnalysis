@@ -14,7 +14,7 @@ pelev_data <- read.table("./data/pelev_data.txt", header = TRUE)
 
 mortality <- predict(r3, preds, type = "response", re.form = NA)
 
-
+require(ggplot2)
 pred_diff <- preds[1:16,]
 pred_diff$diff_mort <- mortality[17:32] - mortality[1:16] 
 pred_diff$CI025 <- as.numeric(booted_seedling_mortality[1, 33:48])
@@ -22,13 +22,14 @@ pred_diff$CI975 <- as.numeric(booted_seedling_mortality[2, 33:48])
 pred_diff$pe <- pelev_data$pe
 pred_diff$sigDiff <- rep("diff", 16)
 pred_diff$sigDif[which(pred_diff$CI025 < 0)] <- 'no_diff'
+pred_diff$Wooddensity <- read.table('./data/dden_adult.txt', header = TRUE)$dden_adult
 
 write.table(pred_diff, file = './analysis/inundation_predicts_species_distributions/data/riskratio.txt')
 
 cols <- c("#8CB369", "#F4E285", "#4C8577","#F4A259", "#BC4B51")
 
 
-p1 <- ggplot(pred_diff, aes(x = sp, y = diff_mort, color = sigDif)) + geom_point() + 
+p1 <- ggplot(pred_diff, aes(x = reorder(sp, pe), y = diff_mort, color = sigDif)) + geom_point() + 
   geom_errorbar(aes(ymin = CI025, ymax = CI975), width = 0.2)  + 
   theme_bw() + 
   xlab("Species") + 
@@ -41,6 +42,8 @@ p1 <- ggplot(pred_diff, aes(x = sp, y = diff_mort, color = sigDif)) + geom_point
 
 p1
 
+
+####
 ggsave(p1, file = './analysis/seedling_mortality_analysis/graph_code/graphs/species_interaction_mortality_difference.png', 
               width = 8, 
               height = 4)

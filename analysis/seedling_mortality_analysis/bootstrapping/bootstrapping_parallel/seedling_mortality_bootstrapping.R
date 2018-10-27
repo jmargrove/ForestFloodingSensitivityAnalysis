@@ -1,11 +1,12 @@
 # bootstrapping code for 95% IC and the differances 
 rm(list = ls())
 # number of bootstraps 
-n = 5000 
+n = 5
 # route 
+route <- paste(getwd(), "/", sep = "")
 #route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
 # route on shorea 
-route <- paste(getwd(), "/", sep = "")
+
 
 # Import packages 
 source(paste(route, 'packages.R', sep = ""))
@@ -23,7 +24,8 @@ preds <- with(seedling_mortality_data, expand.grid(dia = mean(dia, na.rm = T),
                                                   flood = levels(seedling_mortality_data$flood)))
 
 # booty function for bootstrapping glmer 
-booty <- function(data, model, preds) {
+booty <- function(data, model, preds, i) {
+  print(paste("this is what i = ", i, sep = ""))
   random_row_numbers <- sample(1:dim(data)[1], replace = TRUE)
   random_row <- data[random_row_numbers, ]
   btm <- update(model, . ~ ., data = random_row, nAGQ = 0)
@@ -47,12 +49,13 @@ boots <- foreach(i = 1:n,
                  # .export=c('function1', 'function2'), 
                  .packages='lme4', 
                  .combine = cbind) %dopar% booty(data = seedling_mortality_data,
-                                                          model = r3,
-                                                          preds = preds)
+                                                 model = r3,
+                                                 preds = preds, 
+                                                 i = i)
 #stop the cluster
 stopCluster(cl)
 # calculate the confidence intervals
 CI <- (apply(boots, 1, quantile, c(0.025, 0.975)))
 
-write.table(CI, file = paste(route, "bootstrapped_seedling_mortality_glmer.txt"))
+write.table(CI, file = paste(route, "bootstrapped_seedling_mortality_glmer_nAGQ0.txt"))
 
