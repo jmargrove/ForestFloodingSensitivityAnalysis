@@ -17,6 +17,7 @@ preds <- data.frame(d = d_seq)
 preds$e <- predict(model2, newdata = preds, type = "response")
 
 # bootstrap the model
+<<<<<<< HEAD
 # n = 5000  #number of bootstrapping samples, if n is not defined 10 rounds will be done. See 'ternary' below
 # 
 # CI <- booter(model2,
@@ -25,6 +26,16 @@ preds$e <- predict(model2, newdata = preds, type = "response")
 #                 n = if(n) n else 10)
 # 
 # save(CI, file = './analysis/wood_density_distribution/bootstrapped/wooddensity_VS_elevation_gls_n=5000.R')
+=======
+n = 5000  #number of bootstrapping samples, if n is not defined 10 rounds will be done. See 'ternary' below
+
+CI <- booter(model2,
+                data = wood_density_data_178ha,
+                preds = preds,
+                n = if(n) n else 10)
+
+save(CI, file = './analysis/wood_density_distribution/bootstrapped/wooddensity_VS_elevation_gls_n=5000.R')
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 
 # Load bootstrapped values
 load('./analysis/wood_density_distribution/bootstrapped/wooddensity_VS_elevation_gls_n=5000.R')
@@ -46,6 +57,11 @@ p1
 
 ggsave(p1, 
        file = './analysis/wood_density_distribution/graph_code/graphs/wooddensity_VS_elevation_gls.png', 
+<<<<<<< HEAD
        width = 5, 
        height = 5)
+=======
+       width = 3, 
+       height = 3)
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 

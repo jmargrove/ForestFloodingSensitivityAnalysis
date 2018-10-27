@@ -60,7 +60,10 @@ dt$nudge_text[which(dt$sp == "Ptom")] <- 2
 dt$nudge_text[which(dt$sp == "Smec")] <- -1
 dt$nudge_text[which(dt$sp == "Swal")] <- -1
 dt$nudge_text[which(dt$sp == "Sfal")] <- -1
+<<<<<<< HEAD
 dt$nudge_text[which(dt$sp == "Ssmi")] <- -1
+=======
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 
 preds <- data.frame(p = seq(min(p),max(p), length = 100))
 preds$e <- predict(model3, preds, type = "response")
@@ -69,6 +72,7 @@ preds$CI <- predict(model3, preds, type = "response", se.fit = TRUE)$se.fit * 1.
 j <- rep(c(130, 125), 7)[1:13] + 10
 
 colnames(dt)[3] <- "Abundance"
+<<<<<<< HEAD
 vj = rep(1, dim(dt)[1])
 vj[which(dt$sp == "Ptom")] <- -1
 vj[which(dt$sp == "Ssmi")] <- -1
@@ -85,6 +89,8 @@ hj[which(dt$sp == "Sfal")] <- -0.5
 hj[which(dt$sp == "Smac")] <- 0
 hj[which(dt$sp == "Ssmi")] <- 0
 
+=======
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 
 p2 <- ggplot(dt, aes(x = p, y = e)) + 
   geom_vline(xintercept = p, alpha = 0.2, linetype = 2) +

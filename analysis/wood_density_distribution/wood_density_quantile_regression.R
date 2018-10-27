@@ -4,7 +4,10 @@ rm(list = ls())
 
 source("./packages.R")
 source("./analysis/wood_density_distribution/data/data_index.R")
+<<<<<<< HEAD
 source("./analysis/wood_density_distribution/function_index.R")
+=======
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 
 # Taus/quantiles of 
 taus = c(0.025, 0.1, 0.5, 0.9, 0.975)
@@ -12,6 +15,7 @@ taus = c(0.025, 0.1, 0.5, 0.9, 0.975)
 # Run the model, log-log version as it fits better
 quantModel <- rq(log(e) ~ log(d), data = wood_density_data_178ha, tau = taus)
 summary(quantModel)
+<<<<<<< HEAD
 plot(quantModel)
 
 # save model for graphing
@@ -54,3 +58,8 @@ ggsave(p1, file = "./analysis/wood_density_distribution/graph_code/graphs/quantr
        width = 5, 
        height = 5)
 
+=======
+
+# save model for graphing
+save(quantModel, file = "./analysis/wood_density_distribution/models/quanreg_models/wooddensity_VS_elevation_quantreg.R")
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e

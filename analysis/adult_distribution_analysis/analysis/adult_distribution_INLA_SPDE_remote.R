@@ -1,6 +1,7 @@
 # adult distribution INLA SPDE analysis
 rm(list = ls())
 <<<<<<< HEAD
+<<<<<<< HEAD
 print('working dir:::', getwd())
 path <- '/home/majames/Documents/ForestFloodingSensitivityAnalysis/adult_distribution_analysis/'
 #pathe <- './'
@@ -9,6 +10,11 @@ print(paste('working dir:::', getwd()))
 path <- '/home/majames/Documents/ForestFloodingSensitivityAnalysis/analysis/adult_distribution_analysis/'
 #path <- paste(getwd(), '/analysis/adult_distribution_analysis/', sep = "")
 >>>>>>> master
+=======
+print(paste('working dir:::', getwd()))
+path <- '/home/majames/Documents/ForestFloodingSensitivityAnalysis/analysis/adult_distribution_analysis/'
+#path <- paste(getwd(), '/analysis/adult_distribution_analysis/', sep = "")
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 
 source(paste(path, 'data/data_index.R', sep = ""))
 str(species_occurance_data)

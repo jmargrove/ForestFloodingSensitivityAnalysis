@@ -2,7 +2,11 @@
 #graphing the seedling mortality data 
 rm(list = ls())
 # import bootstrapped data 
+<<<<<<< HEAD
 booted_seedling_mortality <- read.table('./analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/ bootstrapped_seedling_mortality_glmer_nAGQ0.txt', header = TRUE)
+=======
+booted_seedling_mortality <- read.table('./analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/ bootstrapped_seedling_mortality_glmer.txt', header = TRUE)
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 str(booted_seedling_mortality)
 # import model
 load('./analysis/seedling_mortality_analysis/models/seedling_mortality_model.R')
