@@ -72,7 +72,11 @@ head(sbecDT)
 
 smacDT <- data[data$Species == "Shorea_macroptera" & data$Diam2000 > 40 & 
                  data$Diam2000 < 50,]
+<<<<<<< HEAD
 data <- data[data$Diam2000 > 50 & data$Species %in% spp,]
+=======
+#data <- data[data$Diam2000 > 50 & data$Species %in% spp,]
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 data <- data[data$Diam2000 > 50,]
 data <- rbind(data, sxanDT, sbecDT, smacDT)
 head(data)
