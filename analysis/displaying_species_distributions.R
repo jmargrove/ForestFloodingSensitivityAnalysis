@@ -32,10 +32,9 @@ elevation_CI <- read.table("./data/elevation_CI.txt", header = TRUE)
 # Explore the results 
 ggplot(spdata, aes(x = reorder(sp, elev), y = elev)) + geom_boxplot() + 
   geom_point(data = pelev_data, 
-             aes(x = sp, y = pe, 
-                 size = with(spdata, tapply(sp, sp, length)), 
-                 color = "red")) + 
-  theme_classic()
+             aes(x = sp, y = pe), size = with(spdata, tapply(sp, sp, length)/100), 
+             color = "red") + 
+  theme_bw()
 
 
 # Preperation of the main data frame of the curves
