@@ -1,7 +1,7 @@
 # bootstrapping code for 95% IC and the differances 
 rm(list = ls())
 # number of bootstraps 
-n = 5000 
+n = 2000 
 # route 
 route <- paste(getwd(), "/", sep = "")
 #route <- paste(getwd(), "/analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/", sep = "")
@@ -28,7 +28,7 @@ booty <- function(data, model, preds, i) {
   print(paste("this is what i = ", i, sep = ""))
   random_row_numbers <- sample(1:dim(data)[1], replace = TRUE)
   random_row <- data[random_row_numbers, ]
-  btm <- update(model, . ~ ., data = random_row, nAGQ = 0)
+  btm <- update(model, . ~ ., data = random_row)
   res <- predict(btm, preds, type = "response", re.form = NA)
   delta <- res[17:32] - res[1:16]
   res <- c(res, delta)
@@ -57,5 +57,5 @@ stopCluster(cl)
 # calculate the confidence intervals
 CI <- (apply(boots, 1, quantile, c(0.025, 0.975)))
 
-write.table(CI, file = paste(route, "bootstrapped_seedling_mortality_glmer_nAGQ0.txt"))
+write.table(CI, file = paste(route, "bootstrapped_seedling_mortality_glmer_nAGQ=1.txt"))
 
