@@ -52,6 +52,7 @@ resid(lm(elev ~ p, data))[1:10]
 (data$elev - data$p)[1:10]
 
 # nudge text 
+
 dt$nudge_text <- rep(0.5, 13)
 dt$nudge_text[which(dt$sp == "Slep")] <- -1
 dt$nudge_text[which(dt$sp == "Spar")] <- -1
@@ -59,6 +60,10 @@ dt$nudge_text[which(dt$sp == "Ptom")] <- 2
 dt$nudge_text[which(dt$sp == "Smec")] <- -1
 dt$nudge_text[which(dt$sp == "Swal")] <- -1
 dt$nudge_text[which(dt$sp == "Sfal")] <- -1
+<<<<<<< HEAD
+dt$nudge_text[which(dt$sp == "Ssmi")] <- -1
+=======
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 
 preds <- data.frame(p = seq(min(p),max(p), length = 100))
 preds$e <- predict(model3, preds, type = "response")
@@ -67,6 +72,25 @@ preds$CI <- predict(model3, preds, type = "response", se.fit = TRUE)$se.fit * 1.
 j <- rep(c(130, 125), 7)[1:13] + 10
 
 colnames(dt)[3] <- "Abundance"
+<<<<<<< HEAD
+vj = rep(1, dim(dt)[1])
+vj[which(dt$sp == "Ptom")] <- -1
+vj[which(dt$sp == "Ssmi")] <- -1
+vj[which(dt$sp == "Sbec")] <- 0
+vj[which(dt$sp == "Sfal")] <- 0
+vj[which(dt$sp == "Dry")] <- -0.5
+vj[which(dt$sp == "Smec")] <- -0.5
+vj[which(dt$sp == "Smac")] <- 1
+vj[which(dt$sp == "Dry")] <- -1.5
+
+
+hj <- rep(0.5, dim(dt)[1])
+hj[which(dt$sp == "Sfal")] <- -0.5
+hj[which(dt$sp == "Smac")] <- 0
+hj[which(dt$sp == "Ssmi")] <- 0
+
+=======
+>>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 
 p2 <- ggplot(dt, aes(x = p, y = e)) + 
   geom_vline(xintercept = p, alpha = 0.2, linetype = 2) +
@@ -77,7 +101,7 @@ p2 <- ggplot(dt, aes(x = p, y = e)) +
   geom_line(data = preds, aes(y = e - CI, x = p), alpha = 0.2) + 
   geom_line(data = preds, aes(x = p, y = e)) +
   theme_classic() + 
-  geom_text(aes(x = p, y = j, label = sp, size = 20, angle = 60), nudge_x = dt$nudge_text, show.legend = FALSE) + 
+  geom_text(aes(x = p, y = j, label = sp, size = 20, angle = 60), hjust = hj, vjust = vj, show.legend = FALSE) + 
   geom_point(aes(x = p, y = j), size = 0.2) + 
   theme(legend.position="top") +
   xlab("Predicted species elevation (asl m)") +
