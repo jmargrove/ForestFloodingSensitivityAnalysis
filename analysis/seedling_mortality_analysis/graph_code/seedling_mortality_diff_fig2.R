@@ -10,6 +10,8 @@ str(booted_seedling_mortality)
 load('./analysis/seedling_mortality_analysis/models/seedling_mortality_model.R')
 # prediction data.frame 
 source('./analysis/seedling_mortality_analysis/data/prediction_species_inundation_interaction.R')
+# colors 
+source('./colors.R')
 # prediction data.frame 
 pelev_data <- read.table("./data/pelev_data.txt", header = TRUE)
 
@@ -22,24 +24,22 @@ pred_diff$diff_mort <- mortality[17:32] - mortality[1:16]
 pred_diff$CI025 <- as.numeric(booted_seedling_mortality[1, 33:48])
 pred_diff$CI975 <- as.numeric(booted_seedling_mortality[2, 33:48])
 pred_diff$pe <- pelev_data$pe
-pred_diff$sigDiff <- rep("diff", 16)
-pred_diff$sigDif[which(pred_diff$CI025 < 0)] <- 'no_diff'
+pred_diff$`Different from Zero` <- rep("diff", 16)
+pred_diff$`Different from Zero`[which(pred_diff$CI025 < 0)] <- 'no diff'
 pred_diff$Wooddensity <- read.table('./data/dden_adult.txt', header = TRUE)$dden_adult
 
 write.table(pred_diff, file = './analysis/inundation_predicts_species_distributions/data/riskratio.txt')
 
-cols <- c("#8CB369", "#F4E285", "#4C8577","#F4A259", "#BC4B51")
-
-
-p1 <- ggplot(pred_diff, aes(x = reorder(sp, pe), y = diff_mort, color = sigDif)) + geom_point() + 
-  geom_errorbar(aes(ymin = CI025, ymax = CI975), width = 0.2)  + 
+p1 <- ggplot(pred_diff, aes(x = reorder(sp, pe), y = diff_mort, color = `Different from Zero`)) + geom_point() + 
+  geom_errorbar(aes(ymin = CI025, ymax = CI975), width = 0.2, alpha = 0.5)  + 
   theme_bw() + 
   xlab("Species") + 
   ylab("Risk ratio (Mortality)") + 
   theme(axis.text.x = element_text(face = "italic", angle = 45, vjust = .7)) + 
-  scale_color_manual(values = c("black", cols[c(4)])) + 
+  scale_color_manual(values = c("black", cols[4])) + 
   geom_hline(aes(yintercept = 0), linetype = 2, col = cols[5]) + 
-  theme(legend.position = c(0.1, 0.8)) 
+  theme(legend.position = c(0.15, 0.8)) + 
+  labs(alpha="")
 
 
 p1
@@ -48,7 +48,7 @@ p1
 ####
 ggsave(p1, file = './analysis/seedling_mortality_analysis/graph_code/graphs/species_interaction_mortality_difference.png', 
               width = 8, 
-              height = 5)
+              height = 6)
 
 
 
