@@ -48,7 +48,7 @@ p1
 ####
 ggsave(p1, file = './analysis/seedling_mortality_analysis/graph_code/graphs/species_interaction_mortality_difference.png', 
               width = 8, 
-              height = 4)
+              height = 5)
 
 
 
