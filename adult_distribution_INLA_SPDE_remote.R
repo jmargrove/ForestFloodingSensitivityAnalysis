@@ -47,7 +47,6 @@ for(setup in diff_setups){
   cl <- makeCluster(number_of_cores)
   # register the cores
   registerDoParallel(cl)
-  
   # inla model 
   model1 <- inla(formula, 
                  data = inla.stack.data(stk),
@@ -57,5 +56,4 @@ for(setup in diff_setups){
                  num.threads = number_of_cores)
   # summary 
   save(model1, file = paste(route, '../results/', setup, '.R'), sep = "")
-  
 }

@@ -4,7 +4,7 @@ riskratio <- read.table('./analysis/inundation_predicts_species_distributions/da
 head(riskratio)
 
 # also require the wood density values 
-riskratio$Wooddensity <- read.table('./data/dden_adult.txt', header = TRUE)$dden_adult
+riskratio$Wooddensity <- read.table('./analysis/inundation_predicts_species_distributions/data/wooddensity_adult.txt', header = TRUE)$dden_adult
 
 
 ggplot(riskratio[riskratio$CI025 > 0,], aes(x = diff_mort, y = pe)) + 
@@ -30,8 +30,8 @@ ggplot(riskratio, aes(x = reorder(sp, Wooddensity), y =(diff_mort), color = sigD
 
 
 
-summary(lm(pe ~ Wooddensity, riskratio))
-summary(lm(pe ~ diff_mort, riskratio))
+summary(lm(pe ~ Wooddensity, riskratio, subset = CI025 > 0))
+summary(lm(pe ~ diff_mort, riskratio, subset = CI025 > 0))
 summary(lm(diff_mort ~ Wooddensity, riskratio))
 
 model <- lm(diff_mort ~ pe + Wooddensity, riskratio)

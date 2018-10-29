@@ -1,11 +1,7 @@
 #graphing the seedling mortality data 
 rm(list = ls())
 # import bootstrapped data 
-<<<<<<< HEAD
-booted_seedling_mortality <- read.table('./analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/ bootstrapped_seedling_mortality_glmer_nAGQ0.txt', header = TRUE)
-=======
-booted_seedling_mortality <- read.table('./analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/ bootstrapped_seedling_mortality_glmer.txt', header = TRUE)
->>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
+booted_seedling_mortality <- read.table('./analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/ bootstrapped_seedling_mortality_glmer_nAGQ=1.txt', header = TRUE)
 str(booted_seedling_mortality)
 # import model
 load('./analysis/seedling_mortality_analysis/models/seedling_mortality_model.R')
@@ -31,13 +27,8 @@ levels(preds$`Water inundation`) <- c("Dry", "Wet")
 p1 <- ggplot(preds, aes(x =  reorder(sp, pe), y = mortality, group = `Water inundation`)) + 
   geom_errorbar(aes(ymin = CI025, ymax=CI975), width = 0.3, alpha = 0.2) + 
   theme_classic() + 
-<<<<<<< HEAD
   geom_point(size = 4) +
   geom_point(size = 3, aes(color = `Water inundation`)) +
-=======
-  # geom_point(size = 4) + 
-  # geom_point(size = 3, aes(color = `Water inundation`)) + 
->>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
   theme(legend.position = c(0.25, 0.8)) + 
   xlab("Species") + 
   ylab("p(Mortality)") + 
@@ -46,4 +37,7 @@ p1 <- ggplot(preds, aes(x =  reorder(sp, pe), y = mortality, group = `Water inun
 p1
 
 
-
+###
+ggsave(p1, file = './analysis/seedling_mortality_analysis/graph_code/graphs/species_interaction_mortality_Fig2.png', 
+       width = 8, 
+       height = 4)
