@@ -8,7 +8,6 @@ require(ggplot2)
 require(gtable)
 require(grid)
 
-
 # Import data 
 load('./analysis/adult_distribution_analysis/data/elevation_distribution_CI_NEW.R')
 pelev_data <- read.table("./SRF_spatial_analysis_elevation/SRF_spatial_analysis_elevation/pelev_data.txt", header = TRUE)
@@ -17,12 +16,6 @@ spdata <- droplevels(spatial_data[spatial_data$sp %in% levels(pelev_data$sp),])
 sp_dist_pred <- read.table("./SRF_spatial_analysis_elevation/SRF_spatial_analysis_elevation/preds_curves.txt", header = TRUE)
 spnames <- read.table("./data/species_names.txt", header = TRUE)
 
-
-
-dim(sp_dist_pred)/16
-head(sp_dist_pred)
-
-dim(CI)/16
 # Preperation of the main data frame of the curves
 sp_dist_pred$spname <- with(spnames[spnames$sp %in% levels(pelev_data$sp),], rep(paste(Cap,species), each = 131))
 sp_dist_pred$spname <- factor(sp_dist_pred$spname)
@@ -39,7 +32,7 @@ dim(CI)/16
 p1 <- ggplot(sp_dist_pred[sp_dist_pred$elev > min(spdata$elev) & sp_dist_pred$elev < max(spdata$elev),], aes(x = elev, y = p)) + 
   geom_ribbon(aes(ymin=CI025,ymax=CI975,linetype=NA), alpha =  0.22) + 
   geom_line() + 
-  facet_wrap(~spname, scale="free_y") + 
+  facet_wrap(~spname, scale="free_y", ncol = 8) + 
   theme_classic() + 
   theme(axis.line.x=element_line(color="black"), axis.line.y=element_line(color="black")) + 
   xlab("Elevation (m)") + ylab("p(occurance)") + 
@@ -48,8 +41,11 @@ p1 <- ggplot(sp_dist_pred[sp_dist_pred$elev > min(spdata$elev) & sp_dist_pred$el
 
 p1
 
+
+?facet_wrap
+
 ggsave(p1, 
        file = './analysis/adult_distribution_analysis/graph_code/graphs/species_probability_distribution_Fig2.png',
-       width = 8, 
+       width = 16, 
        height = 5)
 
