@@ -15,6 +15,8 @@ CIQ <- booter(quantModel, data = wood_density_data_178ha, preds = pred, quantreg
 preds$CI025 <- CIQ[1,]
 preds$CI975 <- CIQ[2,]
 
+write.table(preds, file = './analysis/wood_density_distribution/data/quantreg_predictions.txt')
+
 head(preds)
 # Graphing the model
 cols <- c("#8CB369", "#F4E285", "#4C8577","#F4A259", "#BC4B51")
