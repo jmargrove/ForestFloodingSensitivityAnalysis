@@ -1,4 +1,5 @@
 # graphing and bootstrapping the quantile regression model 
+rm(list = ls())
 
 load("./analysis/wood_density_distribution/models/quanreg_models/wooddensity_VS_elevation_quantreg.R")
 source("./analysis/wood_density_distribution/data/data_index.R")
@@ -6,7 +7,8 @@ source("./analysis/wood_density_distribution/function_index.R")
 summary(quantModel)
 # Prediction from the mode and confidence intervales bootstrapped 
 pred <- data.frame(d = seq(min(wood_density_data_178ha$d), max(wood_density_data_178ha$d), length = 100))
-preds <- expand.grid(d = pred$d, Quantile = factor(taus))
+taus <- c(0.025, 0.1, 0.5, 0.9, 0.975)
+preds <- expand.grid(d = pred$d, Quantile = as.factor(taus))
 preds$e <- as.vector(predict(quantModel, pred, type = "response"))
 CIQ <- booter(quantModel, data = wood_density_data_178ha, preds = pred, quantreg = TRUE, n = 5000)
 preds$CI025 <- CIQ[1,]

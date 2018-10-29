@@ -1,13 +1,10 @@
 # wood density quantile regression 
-
+# Clear workspace 
 rm(list = ls())
 
 source("./packages.R")
 source("./analysis/wood_density_distribution/data/data_index.R")
-<<<<<<< HEAD
 source("./analysis/wood_density_distribution/function_index.R")
-=======
->>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
 
 # Taus/quantiles of 
 taus = c(0.025, 0.1, 0.5, 0.9, 0.975)
@@ -15,7 +12,6 @@ taus = c(0.025, 0.1, 0.5, 0.9, 0.975)
 # Run the model, log-log version as it fits better
 quantModel <- rq(log(e) ~ log(d), data = wood_density_data_178ha, tau = taus)
 summary(quantModel)
-<<<<<<< HEAD
 plot(quantModel)
 
 # save model for graphing
@@ -30,8 +26,8 @@ n = 15
 taus2 <- seq(0.025, 0.975, length = n)
 quantModel2 <- rq(log(e) ~ log(d), data = wood_density_data_178ha, tau = taus2)
 
-slopes <- quantModel3$coefficients[2, ]
-int <- quantModel3$coefficients[2, ]
+slopes <- quantModel2$coefficients[2, ]
+int <- quantModel2$coefficients[2, ]
 # CI_slopes <- booter(quantModel2, data = wood_density_data_178ha, n = 5000, coef = TRUE, quantreg = TRUE)
 # save(CI_slopes, file = './analysis/wood_density_distribution/bootstrapped/CI_quantreg_slopes_n=5000.R')
 load(file = './analysis/wood_density_distribution/bootstrapped/CI_quantreg_slopes_n=5000.R')
@@ -58,8 +54,6 @@ ggsave(p1, file = "./analysis/wood_density_distribution/graph_code/graphs/quantr
        width = 5, 
        height = 5)
 
-=======
 
-# save model for graphing
 save(quantModel, file = "./analysis/wood_density_distribution/models/quanreg_models/wooddensity_VS_elevation_quantreg.R")
->>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
+
