@@ -2,11 +2,9 @@
 #graphing the seedling mortality data 
 rm(list = ls())
 # import bootstrapped data 
-<<<<<<< HEAD
-booted_seedling_mortality <- read.table('./analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/ bootstrapped_seedling_mortality_glmer_nAGQ0.txt', header = TRUE)
-=======
-booted_seedling_mortality <- read.table('./analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/ bootstrapped_seedling_mortality_glmer.txt', header = TRUE)
->>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
+
+booted_seedling_mortality <- read.table('./analysis/seedling_mortality_analysis/bootstrapping/bootstrapping_parallel/ bootstrapped_seedling_mortality_glmer_nAGQ=1.txt', header = TRUE)
+
 str(booted_seedling_mortality)
 # import model
 load('./analysis/seedling_mortality_analysis/models/seedling_mortality_model.R')
@@ -41,7 +39,7 @@ p1 <- ggplot(pred_diff, aes(x = reorder(sp, pe), y = diff_mort, color = sigDif))
   theme(axis.text.x = element_text(face = "italic", angle = 45, vjust = .7)) + 
   scale_color_manual(values = c("black", cols[c(4)])) + 
   geom_hline(aes(yintercept = 0), linetype = 2, col = cols[5]) + 
-  theme(legend.position = c(0.25, 0.8)) 
+  theme(legend.position = c(0.1, 0.8)) 
 
 
 p1
@@ -51,4 +49,6 @@ p1
 ggsave(p1, file = './analysis/seedling_mortality_analysis/graph_code/graphs/species_interaction_mortality_difference.png', 
               width = 8, 
               height = 4)
+
+
 
