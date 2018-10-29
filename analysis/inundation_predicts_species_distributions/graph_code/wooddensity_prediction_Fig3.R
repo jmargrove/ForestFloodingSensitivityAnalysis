@@ -28,7 +28,7 @@ partial_lines_data <- data.frame(x = rep(riskratio$dden, 2),
 
 # ANOVA type II to compare the variance 
 var_res <- car::Anova(model2)[,1]
-dd_explaied_variation <- paste('Anova:', round(var_res / sum(var_res) * 100, 1)[1], "%")
+dd_explaied_variation <- paste('ANOVA:', round(var_res / sum(var_res) * 100, 1)[1], "%")
 
 # plotting the data 
 p1 <- ggplot(preds_wooddensity, aes(x = dden, y = elev)) + 
