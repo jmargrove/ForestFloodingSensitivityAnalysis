@@ -28,24 +28,26 @@ sp_dist_pred$CI975 <- CI[2, 1:(131*16)]
 
 dim(sp_dist_pred)/16
 dim(CI)/16
+display_species <- c(levels(reorder(pelev_data$sp, pelev_data$pe))[c(1,5,11,16)])
+display_species_index <- which(sp_dist_pred$sp %in% display_species)
+sp_dist_pred <- sp_dist_pred[display_species_index, ]
 # Graph 
-p1 <- ggplot(sp_dist_pred[sp_dist_pred$elev > min(spdata$elev) & sp_dist_pred$elev < max(spdata$elev),], aes(x = elev, y = p)) + 
+p1 <- ggplot(sp_dist_pred[sp_dist_pred$elev > min(spdata$elev) & sp_dist_pred$elev < max(spdata$elev),], 
+             aes(x = elev, y = p)) + 
   geom_ribbon(aes(ymin=CI025,ymax=CI975,linetype=NA), alpha =  0.22) + 
   geom_line() + 
-  facet_wrap(~spname, scale="free_y", ncol = 8) + 
+  facet_wrap(~spname, scale="free_y", nrow = 1) + 
   theme_classic() + 
   theme(axis.line.x=element_line(color="black"), axis.line.y=element_line(color="black")) + 
   xlab("Elevation (m)") + ylab("p(occurance)") + 
   theme(legend.position="none") +
-  theme(strip.text = element_text(face = "italic")) 
+  theme(strip.text = element_text(face = "italic")) + 
+  theme(text = element_text(size=20))
 
 p1
 
-
-?facet_wrap
-
 ggsave(p1, 
        file = './analysis/adult_distribution_analysis/graph_code/graphs/species_probability_distribution_Fig2.png',
-       width = 16, 
-       height = 5)
+       width = 13, 
+       height = 6)
 
