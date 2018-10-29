@@ -4,6 +4,7 @@ rm(list = ls())
 load("./analysis/wood_density_distribution/models/quanreg_models/wooddensity_VS_elevation_quantreg.R")
 source("./analysis/wood_density_distribution/data/data_index.R")
 source("./analysis/wood_density_distribution/function_index.R")
+
 summary(quantModel)
 # Prediction from the mode and confidence intervales bootstrapped 
 pred <- data.frame(d = seq(min(wood_density_data_178ha$d), max(wood_density_data_178ha$d), length = 100))
@@ -25,13 +26,14 @@ p1 <- ggplot(preds[preds$d < 0.6, ], aes(x = d, y = exp(e), group = Quantile)) +
   ylab("Elevation (m asl)") + 
   xlab(bquote("Wood density g" ~cm^-3 )) +
   theme(legend.position = "top") + 
-  scale_fill_manual(values = cols)
+  scale_fill_manual(values = cols) + 
+  theme(text = element_text(size=20))
 
 p1
 
 ggsave(p1, 
        file = "./analysis/wood_density_distribution/graph_code/graphs/wooddensity_VS_elevation_quanReg.png", 
-       width = 5, 
-       height = 5
+       width = 7, 
+       height = 6
 )
 

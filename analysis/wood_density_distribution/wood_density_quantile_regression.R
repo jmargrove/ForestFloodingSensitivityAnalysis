@@ -10,7 +10,7 @@ source("./analysis/wood_density_distribution/function_index.R")
 taus = c(0.025, 0.1, 0.5, 0.9, 0.975)
 
 # Run the model, log-log version as it fits better
-quantModel <- rq(log(e) ~ log(d), data = wood_density_data_178ha, tau = taus)
+quantModel <- rq(e ~ d, data = wood_density_data_178ha, tau = taus)
 summary(quantModel)
 plot(quantModel)
 
@@ -46,13 +46,14 @@ p1 <- ggplot(taus_data, aes(x = taus, y = slopes)) +
   theme_bw() + 
   stat_smooth(size = 0.5, se = F, color = "red", linetype = 2, method = 'loess') + 
   xlab("Quantile") + 
-  ylab("Beta")
+  ylab("Beta") + 
+  theme(text = element_text(size=20))
 
 p1 
 
 ggsave(p1, file = "./analysis/wood_density_distribution/graph_code/graphs/quantreg_slopes_graph.png", 
-       width = 5, 
-       height = 5)
+       width = 6, 
+       height = 6)
 
 
 save(quantModel, file = "./analysis/wood_density_distribution/models/quanreg_models/wooddensity_VS_elevation_quantreg.R")
