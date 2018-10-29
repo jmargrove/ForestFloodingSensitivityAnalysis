@@ -40,12 +40,12 @@ p1 <- ggplot(sp_dist_pred[sp_dist_pred$elev > min(spdata$elev) & sp_dist_pred$el
   geom_ribbon(aes(ymin=CI025,ymax=CI975,linetype=NA), alpha =  0.22) + 
   geom_line() + 
   facet_wrap(~spname, scale="free_y") + 
-  xlim(min(spdata$elev),max(spdata$elev)) + 
+  # xlim(min(spdata$elev),max(spdata$elev)) + 
   theme_classic() + 
   theme(axis.line.x=element_line(color="black"), axis.line.y=element_line(color="black")) + 
   xlab("Elevation (m)") + ylab("p(occurance)") + 
   theme(legend.position="none") +
-  theme(strip.text = element_text(face = "italic"))
+  theme(strip.text = element_text(face = "italic")) 
 
 p1
 
