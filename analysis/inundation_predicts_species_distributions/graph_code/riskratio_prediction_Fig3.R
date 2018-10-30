@@ -24,14 +24,28 @@ riskratio$partials_rr <- residuals(model2_glm, type = "partial")[, 2] + mean(ris
 partial_lines_data <- data.frame(x = rep(riskratio$diff_mort, 2), 
                                  y = c(riskratio$elev, riskratio$partials_rr))
 # ANOVA type II to compare the variance 
-var_res <- car::Anova(model2)[,1]
-rr_explaied_variation <- paste('ANOVA:', round(var_res / sum(var_res) * 100, 1)[2], "%")
+var_res_rr <- car::Anova(model2)[,1]
+rr_explaied_variation <- paste('ANOVA:', round(var_res_rr / sum(var_res_rr) * 100, 1)[2], "%")
 
 # jittering the species names 
+vj_rr <- rep(2.5, 16)
+vj_rr[which(riskratio$sp == 'Spar')] <- -2.5
+vj_rr[which(riskratio$sp == 'Smac')] <- 12
+vj_rr[which(riskratio$sp == 'Slep')] <- -4
+vj_rr[which(riskratio$sp == 'Smec')] <- -3
+vj_rr[which(riskratio$sp == 'Pmal')] <- -4
+vj_rr[which(riskratio$sp == 'Sgib')] <- 8
+vj_rr[which(riskratio$sp == 'Ssmi')] <- -4
+vj_rr[which(riskratio$sp == 'Sacu')] <- -4
+#horazontal 
+hj_rr <- rep(0.01, 16)
+hj_rr[which(riskratio$sp == 'Ssmi')] <- -0.02
+hj_rr[which(riskratio$sp == 'Sbec')] <- -0.02
+hj_rr[which(riskratio$sp == 'Sxan')] <- 0.01
 
 
 # plotting the data 
-p1 <- ggplot(preds_riskratio, aes(x = diff_mort, y = elev)) + 
+p1_riskratio <- ggplot(preds_riskratio, aes(x = diff_mort, y = elev)) + 
   geom_line(data = partial_lines_data, aes(x = x, y = y, group = factor(x)), alpha = 0.3) + 
   geom_line() + 
   geom_point(data = riskratio, aes(y = elev, x = diff_mort), alpha = 0.5, color = 'red') + 
@@ -47,13 +61,21 @@ p1 <- ggplot(preds_riskratio, aes(x = diff_mort, y = elev)) +
   ylim(40, 120) + 
   stat_smooth(data = riskratio, aes(x = diff_mort, y = elev), 
               se = F, method = 'lm', color = 'red', 
-              linetype = 2, size = 0.25) + 
+              linetype = 2, size = 0.5) + 
   theme(text = element_text(size = 20)) + 
-  geom_text(data = riskratio, aes(label = sp), nudge_y = rep(2.3, 16), nudge_x = rep(0.01, 15))
+  geom_text(data = riskratio, aes(label = sp), 
+            size = 5,
+            nudge_y = vj_rr, 
+            nudge_x = hj_rr, 
+            fontface = 'italic')
 
-p1
 
-ggsave(p1, 
-       file = './analysis/inundation_predicts_species_distributions/graph_code/graphs/elevation_VS_riskration_C_woodensity.png', 
-       width = 6, 
-       height = 6)
+
+# p1_riskratio <- p1
+# save(p1_riskratio, file = './analysis/inundation_predicts_species_distributions/graph_code/graphs/elevation_VS_riskratio.R')
+
+
+# ggsave(p1, 
+#        file = './analysis/inundation_predicts_species_distributions/graph_code/graphs/elevation_VS_riskration_C_woodensity.png', 
+#        width = 6, 
+#        height = 6)
