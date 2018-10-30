@@ -13,13 +13,14 @@ source("./functions/booter.R")
 # Import data 
 sp <- read.table("./data/riskratio_data.txt", header = TRUE)$sp[-c(4,7, 13)]
 data <- read.table( "./data/Reuben_data/data_cleaned.txt", header = TRUE)
-with(data, tapply(dden, Species, mean))
+str(data)
 # Import model 
 load("./models/pele_fsen_dden_Abundance")
 summary(model)
 # Predict elevation
 data$p <- predict(model, data, type = "response")
 head(data)
+hist(data$Diam2000)
 
 # organsie data in to a data.frame
 e <- as.vector(with(data, tapply(elev, Species, mean, na.rm = T)))
@@ -27,14 +28,13 @@ p <- as.vector(with(data, tapply(p, Species, mean)))
 a <- (as.vector(with(data, tapply(p, Species, length))))
 dden <- round(as.vector(with(data, tapply(dden, Species, mean))), 2)
 dt <- data.frame(e, p, a, sp, dden)
-rownames(dt) <- c()
 
 # SD of the predictions 
 preds <- data.frame(rr = as.vector(with(data, tapply(rr, Species, mean))), 
                     dden = as.vector(with(data, tapply(dden, Species, mean))))
 
 # Run native model 
-model3 <- lm(e ~ p, weight = a, dt)
+model3 <- lm(e ~ p, dt)
 summary(model3)
 
 # 95% coef

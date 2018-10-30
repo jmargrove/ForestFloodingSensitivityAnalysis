@@ -18,6 +18,10 @@ data <- rbind(a1_data, a2_data, s1_data, s2_data, s3_data)
 
 data$unqeID <- paste(data$`X10x10`, data$`X20x20`, data$ha4plot, data$Forest, sep = "")
 
+
+head(data)
+str(data)
+
 # Points with elevation 
 #elev <- read.csv("./data/Reuben_data/pointsWithElevation.csv")
 elev <- read.table("./data/Reuben_data/plots10x10_elevation.txt", header = TRUE)
@@ -72,11 +76,11 @@ head(sbecDT)
 
 smacDT <- data[data$Species == "Shorea_macroptera" & data$Diam2000 > 40 & 
                  data$Diam2000 < 50,]
-<<<<<<< HEAD
+
 data <- data[data$Diam2000 > 50 & data$Species %in% spp,]
-=======
+
 #data <- data[data$Diam2000 > 50 & data$Species %in% spp,]
->>>>>>> eddbaf3409778575f50f1e19684046df57ec3a8e
+
 data <- data[data$Diam2000 > 50,]
 data <- rbind(data, sxanDT, sbecDT, smacDT)
 head(data)
