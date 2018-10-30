@@ -1,4 +1,4 @@
-#
+# inundation wood density graph 
 rm(list = ls())
 # predictions for the graph
 load('./analysis/inundation_wooddensity_relationship/models/inundation_VS_wooddensity_loglog.R')
