@@ -7,8 +7,9 @@ source('analysis/inundation_predicts_species_distributions/data/data_index.R')
 model <- lm(elev ~ dden * diff_mort, riskratio)
 summary(model)
 # remove the interaction 
-model2 <- lm(elev ~ dden + diff_mort, riskratio)
+model2 <- lm(elev ~ diff_mort + dden, riskratio)
 summary(model2)
+
 # remove each term just to check
 model3 <- lm(elev ~ dden, riskratio)
 model4 <- lm(elev ~ diff_mort, riskratio)
@@ -28,3 +29,8 @@ summary(model2_glm)
 
 save(model2_glm, file = './analysis/inundation_predicts_species_distributions/models/elevation_Vs_wooddensityN_diff_mortality_GLM.R')
 
+# bootstrap the models to get the confidence intervals 
+source('./functions/booter.R')
+CI <- booter(model2, data = riskratio, n = 5000, coef = T)
+CI
+coef(model2)
