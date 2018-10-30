@@ -30,16 +30,17 @@ pred_diff$Wooddensity <- read.table('./data/dden_adult.txt', header = TRUE)$dden
 
 write.table(pred_diff, file = './analysis/inundation_predicts_species_distributions/data/riskratio.txt')
 
-p1 <- ggplot(pred_diff, aes(x = reorder(sp, pe), y = diff_mort, color = `Different from Zero`)) + geom_point() + 
-  geom_errorbar(aes(ymin = CI025, ymax = CI975), width = 0.2, alpha = 0.5)  + 
+p1 <- ggplot(pred_diff, aes(x = reorder(sp, pe), y = diff_mort, color = `Different from Zero`)) + 
+  geom_errorbar(aes(ymin = CI025, ymax = CI975), width = 0.5, alpha = 0.5, size = 1)  + 
   theme_bw() + 
   xlab("Species") + 
   ylab("Risk ratio (Mortality)") + 
   theme(axis.text.x = element_text(face = "italic", angle = 45, vjust = .7)) + 
   scale_color_manual(values = c("black", cols[4])) + 
+  geom_point(size = 3, pch = 21, fill = 'white') + 
   geom_hline(aes(yintercept = 0), linetype = 2, col = cols[5]) + 
   theme(legend.position = c(0.15, 0.8)) + 
-  labs(alpha="")
+  theme(text = element_text(size=20))
 
 
 p1
@@ -47,7 +48,7 @@ p1
 
 ####
 ggsave(p1, file = './analysis/seedling_mortality_analysis/graph_code/graphs/species_interaction_mortality_difference.png', 
-              width = 8, 
+              width = 13, 
               height = 6)
 
 
