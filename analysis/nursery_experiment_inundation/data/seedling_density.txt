@@ -1,0 +1,11 @@
+"sp" "seed_density"
+"1" "Dry" 0.42
+"2" "Pmal" 0.49
+"3" "Ptom" 0.52
+"4" "Sbec" 0.42
+"5" "Sjoh" 0.39
+"6" "Slep" 0.4
+"7" "Spar" 0.39
+"8" "Ssem" 0.5
+"9" "Ssmi" 0.37
+"10" "Sxan" 0.57
