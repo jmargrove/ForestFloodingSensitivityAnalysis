@@ -14,7 +14,7 @@
 require(foreach)
 
 booter <- function(
-  model, data, preds, n, coef = FALSE,  CI = "95%", quantreg = FALSE) {
+  model, data, preds, n, coef = FALSE,  CI = "95%", quantreg = FALSE, MEM = FALSE) {
   if (!coef) {
     booty <- function() {
       random_row_numbers <- sample(1:dim(data)[1], replace = TRUE)
@@ -35,7 +35,9 @@ booter <- function(
         random_row_numbers <- sample(1:dim(data)[1], replace = TRUE)
         random_row <- data[random_row_numbers, ]
         btm <- update(model, . ~ ., data = random_row)
-        coef(btm) 
+        if(MEM == TRUE){
+          fixef(btm)
+          }else {coef(btm) }
       }
     }
       if (quantreg == TRUE){
