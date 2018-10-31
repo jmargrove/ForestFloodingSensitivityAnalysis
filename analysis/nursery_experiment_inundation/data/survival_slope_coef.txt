@@ -1,0 +1,11 @@
+"sp" "p"
+"treat" "dry" -0.000366311188097038
+"sppmal:treat" "pmal" -0.37521826764892
+"spptom:treat" "ptom" -0.23573818854462
+"spsbec:treat" "sbec" -0.176164749770622
+"spsjoh:treat" "sjoh" -0.266978843863614
+"spslep:treat" "slep" -0.106904324766971
+"spspar:treat" "spar" -0.347865846601358
+"spssem:treat" "ssem" -0.349687979767045
+"spssmi:treat" "ssmi" -0.143544985732203
+"spsxan:treat" "sxan" -0.390265561188668
