@@ -18,7 +18,7 @@ source(system.file("utils", "allFit.R", package = "lme4"))
 source("./functions/newbinplot.R"); require(arm)
 source("./functions/ranNorm.R")
 source("./functions/booter.R")
-survival_data <- read.table("./data/Experiment, mort, leafAB, dden, wden,sla.txt", header = TRUE);
+survival_data <- read.table("./analysis/nursery_experiment_inundation/data/nursery_experiment_data.txt", header = TRUE);
 str(survival_data)
 
 ##### data exploration with ggplot. 
